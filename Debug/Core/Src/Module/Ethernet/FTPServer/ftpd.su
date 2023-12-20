@@ -1,0 +1,6 @@
+../Core/Src/Module/Ethernet/FTPServer/ftpd.c:111:5:fsprintf	20	static
+../Core/Src/Module/Ethernet/FTPServer/ftpd.c:132:6:ftpd_init	16	static
+../Core/Src/Module/Ethernet/FTPServer/ftpd.c:149:9:ftpd_run	40	static
+../Core/Src/Module/Ethernet/FTPServer/ftpd.c:579:6:proc_ftpd	280	static
+../Core/Src/Module/Ethernet/FTPServer/ftpd.c:1000:6:ftplogin	120	static
+../Core/Src/Module/Ethernet/FTPServer/ftpd.c:1018:5:pport	40	static

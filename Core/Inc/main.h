@@ -60,6 +60,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define SW_IN1_Pin GPIO_PIN_0
 #define SW_IN1_GPIO_Port GPIOC
+#define SPI2_NSS_Pin GPIO_PIN_12
+#define SPI2_NSS_GPIO_Port GPIOB
 #define ETH_INT_Pin GPIO_PIN_13
 #define ETH_INT_GPIO_Port GPIOD
 #define JT_DIO_Pin GPIO_PIN_13
@@ -67,7 +69,7 @@ void Error_Handler(void);
 #define JT_CLK_Pin GPIO_PIN_14
 #define JT_CLK_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-
+extern NAND_HandleTypeDef hnand1;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

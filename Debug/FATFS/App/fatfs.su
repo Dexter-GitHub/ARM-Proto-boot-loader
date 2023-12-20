@@ -1,0 +1,10 @@
+../FATFS/App/fatfs.c:66:6:MX_FATFS_Init	8	static
+../FATFS/App/fatfs.c:82:7:get_fattime	4	static
+../FATFS/App/fatfs.c:90:6:NAND_FlashDiskInit	16	static
+../FATFS/App/fatfs.c:115:10:FATFS_GetVolume	2112	static
+../FATFS/App/fatfs.c:151:6:FATFS_ScanFile	48	static
+../FATFS/App/fatfs.c:190:9:FATFS_FileList	2160	static
+../FATFS/App/fatfs.c:306:6:FATFS_DiskCheck	16	static
+../FATFS/App/fatfs.c:316:9:FATFS_FileOut	32	static
+../FATFS/App/fatfs.c:336:9:scan_files	2184	static
+../FATFS/App/fatfs.c:447:5:get_filesize	2152	static

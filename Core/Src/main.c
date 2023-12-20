@@ -19,10 +19,22 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "fatfs.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "bsp.h"
+#include "24AA02E48.h"
+#include "w5500_init.h"
+#include "ftpc.h"
+#include "flash_if.h"
+#include "common.h"
+#include "nandFlash.h"
+/* STM32F103Vx
+ * Flash memory: 768KB(1MB)
+ */
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,9 +52,13 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c2;
+
 SPI_HandleTypeDef hspi2;
 
 UART_HandleTypeDef huart1;
+
+NAND_HandleTypeDef hnand1;
 
 /* USER CODE BEGIN PV */
 
@@ -53,6 +69,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_I2C2_Init(void);
+static void MX_FSMC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -69,7 +87,10 @@ static void MX_USART1_UART_Init(void);
 int main(void)
 {
     /* USER CODE BEGIN 1 */
-
+    GPIO_PinState state;
+    int32_t funcSts = 0;    
+    uint8_t macAddr[MAC_ADDR_LEN] = {0,};
+    uint8_t ipAddr[4] = {192, 168, 0, 100};
     /* USER CODE END 1 */
 
     /* MCU Configuration--------------------------------------------------------*/
@@ -92,14 +113,33 @@ int main(void)
     MX_GPIO_Init();
     MX_SPI2_Init();
     MX_USART1_UART_Init();
+    MX_I2C2_Init();
+    MX_FSMC_Init();
+    MX_FATFS_Init();
     /* USER CODE BEGIN 2 */
-    printf("Hello world\r\n");
+    W5500_Init();
+    funcSts = Get_MacAddress(macAddr);
+    if (funcSts == 0) {
+        W5500_NetConf((int8_t *)macAddr, W5500_IP_ADDRESS, W5500_SUB_NET_MASK, W5500_GATE_WAY);
+        W5500_DisplayNetConf();
+    }
+    state = SWITCH_GetStatus();
+    if (state != GPIO_PIN_SET) {
+        printf("> Start Firmware download mode\r\n");       
+        ftpc_init(ipAddr);             
+    }
+    else {
+        printf("> Start Application\r\n");
+        JumpToApplication();
+    }
+    
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
-    while (1)
-    {
+    while (1) {  
+        FtpDownloadApplication();      
+        HAL_Delay(1);
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
@@ -142,6 +182,39 @@ void SystemClock_Config(void)
     {
         Error_Handler();
     }
+}
+
+/**
+ * @brief I2C2 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_I2C2_Init(void)
+{
+
+    /* USER CODE BEGIN I2C2_Init 0 */
+
+    /* USER CODE END I2C2_Init 0 */
+
+    /* USER CODE BEGIN I2C2_Init 1 */
+
+    /* USER CODE END I2C2_Init 1 */
+    hi2c2.Instance = I2C2;
+    hi2c2.Init.ClockSpeed = 50000;
+    hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
+    hi2c2.Init.OwnAddress1 = 0;
+    hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+    hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+    hi2c2.Init.OwnAddress2 = 0;
+    hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+    hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+    if (HAL_I2C_Init(&hi2c2) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    /* USER CODE BEGIN I2C2_Init 2 */
+
+    /* USER CODE END I2C2_Init 2 */
 }
 
 /**
@@ -224,15 +297,26 @@ static void MX_GPIO_Init(void)
 
     /* GPIO Ports Clock Enable */
     __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOE_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOD_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(SPI2_NSS_GPIO_Port, SPI2_NSS_Pin, GPIO_PIN_RESET);
 
     /*Configure GPIO pin : SW_IN1_Pin */
     GPIO_InitStruct.Pin = SW_IN1_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
     GPIO_InitStruct.Pull = GPIO_PULLUP;
     HAL_GPIO_Init(SW_IN1_GPIO_Port, &GPIO_InitStruct);
+
+    /*Configure GPIO pin : SPI2_NSS_Pin */
+    GPIO_InitStruct.Pin = SPI2_NSS_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(SPI2_NSS_GPIO_Port, &GPIO_InitStruct);
 
     /*Configure GPIO pin : ETH_INT_Pin */
     GPIO_InitStruct.Pin = ETH_INT_Pin;
@@ -241,12 +325,72 @@ static void MX_GPIO_Init(void)
     HAL_GPIO_Init(ETH_INT_GPIO_Port, &GPIO_InitStruct);
 }
 
+/* FSMC initialization function */
+static void MX_FSMC_Init(void)
+{
+
+    /* USER CODE BEGIN FSMC_Init 0 */
+
+    /* USER CODE END FSMC_Init 0 */
+
+    FSMC_NAND_PCC_TimingTypeDef ComSpaceTiming = {0};
+    FSMC_NAND_PCC_TimingTypeDef AttSpaceTiming = {0};
+
+    /* USER CODE BEGIN FSMC_Init 1 */
+
+    /* USER CODE END FSMC_Init 1 */
+
+    /** Perform the NAND1 memory initialization sequence
+     */
+    hnand1.Instance = FSMC_NAND_DEVICE;
+    /* hnand1.Init */
+    hnand1.Init.NandBank = FSMC_NAND_BANK2;
+    hnand1.Init.Waitfeature = FSMC_NAND_PCC_WAIT_FEATURE_ENABLE;
+    hnand1.Init.MemoryDataWidth = FSMC_NAND_PCC_MEM_BUS_WIDTH_8;
+    hnand1.Init.EccComputation = FSMC_NAND_ECC_DISABLE;
+    hnand1.Init.ECCPageSize = FSMC_NAND_ECC_PAGE_SIZE_512BYTE;
+    hnand1.Init.TCLRSetupTime = 0;
+    hnand1.Init.TARSetupTime = 0;
+    /* hnand1.Config */
+    hnand1.Config.PageSize = 2048;
+    hnand1.Config.SpareAreaSize = 64;
+    hnand1.Config.BlockSize = 64;
+    hnand1.Config.BlockNbr = 1024;
+    hnand1.Config.PlaneNbr = 1;
+    hnand1.Config.PlaneSize = 1024;
+    hnand1.Config.ExtraCommandEnable = DISABLE;
+    /* ComSpaceTiming */
+    ComSpaceTiming.SetupTime = 0;
+    ComSpaceTiming.WaitSetupTime = 2;
+    ComSpaceTiming.HoldSetupTime = 2;
+    ComSpaceTiming.HiZSetupTime = 0;
+    /* AttSpaceTiming */
+    AttSpaceTiming.SetupTime = 0;
+    AttSpaceTiming.WaitSetupTime = 2;
+    AttSpaceTiming.HoldSetupTime = 2;
+    AttSpaceTiming.HiZSetupTime = 0;
+
+    if (HAL_NAND_Init(&hnand1, &ComSpaceTiming, &AttSpaceTiming) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /** Disconnect NADV
+     */
+
+    __HAL_AFIO_FSMCNADV_DISCONNECTED();
+
+    /* USER CODE BEGIN FSMC_Init 2 */
+
+    /* USER CODE END FSMC_Init 2 */
+}
+
 /* USER CODE BEGIN 4 */
 #ifdef __GNUC__
-#define PUTCHAR_PROTOTYPE   int __io_putchar(int ch)
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 #else
-#define PUTCHAR_PROTOTYPE   int fputc(int ch, FILE *f)
-#endif  /* __GNUC__ */
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
 PUTCHAR_PROTOTYPE
 {
     HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);

@@ -1,0 +1,12 @@
+../Core/Src/Module/Ethernet/socket.c:105:8:socket	32	static
+../Core/Src/Module/Ethernet/socket.c:197:8:close	16	static
+../Core/Src/Module/Ethernet/socket.c:240:8:listen	16	static
+../Core/Src/Module/Ethernet/socket.c:256:8:connect	24	static
+../Core/Src/Module/Ethernet/socket.c:296:8:disconnect	16	static
+../Core/Src/Module/Ethernet/socket.c:316:9:send	24	static
+../Core/Src/Module/Ethernet/socket.c:384:9:recv	32	static
+../Core/Src/Module/Ethernet/socket.c:489:9:sendto	32	static
+../Core/Src/Module/Ethernet/socket.c:591:9:recvfrom	40	static
+../Core/Src/Module/Ethernet/socket.c:772:9:ctlsocket	24	static
+../Core/Src/Module/Ethernet/socket.c:818:9:setsockopt	16	static
+../Core/Src/Module/Ethernet/socket.c:871:9:getsockopt	24	static
