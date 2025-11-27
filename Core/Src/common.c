@@ -29,7 +29,7 @@ void JumpToApplication(void)
 void FtpDownloadApplication(void)
 {
     uint8_t state;
-    uint8_t hostIpAddr[4] = {192, 168, 0, 75};
+    uint8_t hostIpAddr[4] = {HOST_IP_ADDR1, HOST_IP_ADDR2, HOST_IP_ADDR3, HOST_IP_ADDR4};
 
     state = ftpc_proc(gFtpBuf, (uint8_t *)FTP_USER_NAME, (uint8_t *)FTP_PASSWORD, hostIpAddr);
     if (state == SOCK_OK) {

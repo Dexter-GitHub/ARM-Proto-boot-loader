@@ -123,6 +123,7 @@ int main(void)
         W5500_NetConf((int8_t *)macAddr, W5500_IP_ADDRESS, W5500_SUB_NET_MASK, W5500_GATE_WAY);
         W5500_DisplayNetConf();
     }
+    /* GPIOC GPIO_PIN0 */
     state = SWITCH_GetStatus();
     if (state != GPIO_PIN_SET) {
         printf("> Start Firmware download mode\r\n");       

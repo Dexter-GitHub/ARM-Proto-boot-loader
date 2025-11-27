@@ -13,6 +13,10 @@ extern "C" {
 #define FTP_USER_NAME           "layer"
 #define FTP_PASSWORD            "1234"
 #define APPLICATION_FILE_NAME   "AutoRMeasure.bin"
+#define HOST_IP_ADDR1           192
+#define HOST_IP_ADDR2           168
+#define HOST_IP_ADDR3           0
+#define HOST_IP_ADDR4           75
 
 typedef void (*pFunction)(void);
 

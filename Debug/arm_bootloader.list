@@ -35,15 +35,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  15 .debug_ranges 00001438  00000000  00000000  0006ee50  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  0002069f  00000000  00000000  00070288  2**0
+ 16 .debug_macro  000206b7  00000000  00000000  00070288  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00020b77  00000000  00000000  00090927  2**0
+ 17 .debug_line   00020b5f  00000000  00000000  0009093f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000a8911  00000000  00000000  000b149e  2**0
+ 18 .debug_str    000a8956  00000000  00000000  000b149e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  00159daf  2**0
+ 19 .comment      00000050  00000000  00000000  00159df4  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00007168  00000000  00000000  00159e00  2**2
+ 20 .debug_frame  00007168  00000000  00000000  00159e44  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1087,52 +1087,52 @@ int32_t Get_MacAddress(uint8_t *mac)
  8000d40:	200033d8 	.word	0x200033d8
 
 08000d44 <ftpc_init>:
-
+static uint8_t gMsgBuf[20] = {0,};
 struct ftpc ftpc;
 struct Command Command;
 
-void ftpc_init(uint8_t * src_ip)
+void ftpc_init(uint8_t *src_ip)
 {
  8000d44:	b580      	push	{r7, lr}
  8000d46:	b082      	sub	sp, #8
  8000d48:	af00      	add	r7, sp, #0
  8000d4a:	6078      	str	r0, [r7, #4]
-	ftpc.dsock_mode = FTPC_ACTIVE_MODE;
+    ftpc.dsock_mode = FTPC_ACTIVE_MODE;
  8000d4c:	4b12      	ldr	r3, [pc, #72]	; (8000d98 <ftpc_init+0x54>)
  8000d4e:	2201      	movs	r2, #1
  8000d50:	711a      	strb	r2, [r3, #4]
 
-	ftpc_local_ip.cVal[0] = src_ip[0];
+    ftpc_local_ip.cVal[0] = src_ip[0];
  8000d52:	687b      	ldr	r3, [r7, #4]
  8000d54:	781a      	ldrb	r2, [r3, #0]
  8000d56:	4b11      	ldr	r3, [pc, #68]	; (8000d9c <ftpc_init+0x58>)
  8000d58:	701a      	strb	r2, [r3, #0]
-	ftpc_local_ip.cVal[1] = src_ip[1];
+    ftpc_local_ip.cVal[1] = src_ip[1];
  8000d5a:	687b      	ldr	r3, [r7, #4]
  8000d5c:	785a      	ldrb	r2, [r3, #1]
  8000d5e:	4b0f      	ldr	r3, [pc, #60]	; (8000d9c <ftpc_init+0x58>)
  8000d60:	705a      	strb	r2, [r3, #1]
-	ftpc_local_ip.cVal[2] = src_ip[2];
+    ftpc_local_ip.cVal[2] = src_ip[2];
  8000d62:	687b      	ldr	r3, [r7, #4]
  8000d64:	789a      	ldrb	r2, [r3, #2]
  8000d66:	4b0d      	ldr	r3, [pc, #52]	; (8000d9c <ftpc_init+0x58>)
  8000d68:	709a      	strb	r2, [r3, #2]
-	ftpc_local_ip.cVal[3] = src_ip[3];
+    ftpc_local_ip.cVal[3] = src_ip[3];
  8000d6a:	687b      	ldr	r3, [r7, #4]
  8000d6c:	78da      	ldrb	r2, [r3, #3]
  8000d6e:	4b0b      	ldr	r3, [pc, #44]	; (8000d9c <ftpc_init+0x58>)
  8000d70:	70da      	strb	r2, [r3, #3]
-	ftpc_local_port = 35000;	// 35000
+    ftpc_local_port = 35000;
  8000d72:	4b0b      	ldr	r3, [pc, #44]	; (8000da0 <ftpc_init+0x5c>)
  8000d74:	f648 02b8 	movw	r2, #35000	; 0x88b8
  8000d78:	801a      	strh	r2, [r3, #0]
-    
-	strcpy(ftpc.workingdir, "/");
+
+    strcpy(ftpc.workingdir, "/");
  8000d7a:	4a0a      	ldr	r2, [pc, #40]	; (8000da4 <ftpc_init+0x60>)
  8000d7c:	4b0a      	ldr	r3, [pc, #40]	; (8000da8 <ftpc_init+0x64>)
  8000d7e:	881b      	ldrh	r3, [r3, #0]
  8000d80:	8013      	strh	r3, [r2, #0]
-	socket(CTRL_SOCK, Sn_MR_TCP, FTP_destport, 0x00); 
+    socket(CTRL_SOCK, Sn_MR_TCP, FTP_destport, 0x00);
  8000d82:	4b0a      	ldr	r3, [pc, #40]	; (8000dac <ftpc_init+0x68>)
  8000d84:	881a      	ldrh	r2, [r3, #0]
  8000d86:	2300      	movs	r3, #0
@@ -1153,7 +1153,7 @@ void ftpc_init(uint8_t * src_ip)
 
 08000db0 <ftpc_proc>:
 
-uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
+uint8_t ftpc_proc(uint8_t *dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
 {
  8000db0:	b590      	push	{r4, r7, lr}
  8000db2:	b09d      	sub	sp, #116	; 0x74
@@ -1173,15 +1173,15 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
     uint16_t size = 0;
  8000dd0:	2300      	movs	r3, #0
  8000dd2:	f8a7 3066 	strh.w	r3, [r7, #102]	; 0x66
-	uint32_t send_byte, recv_byte;
-	uint32_t blocklen;
-	uint32_t remain_filesize;
-	uint32_t remain_datasize;
+    uint32_t send_byte, recv_byte;
+    uint32_t blocklen;
+    uint32_t remain_filesize;
+    uint32_t remain_datasize;
     long ret = SOCK_OK;
  8000dd6:	2301      	movs	r3, #1
  8000dd8:	64fb      	str	r3, [r7, #76]	; 0x4c
-    
-    /* CONTROL SOCKET */		
+
+    /* CONTROL SOCKET */
     switch (getSn_SR(CTRL_SOCK)) {
  8000dda:	f44f 7052 	mov.w	r0, #840	; 0x348
  8000dde:	f000 fed7 	bl	8001b90 <WIZCHIP_READ>
@@ -1219,11 +1219,11 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8000e58:	08001323 	.word	0x08001323
  8000e5c:	08001323 	.word	0x08001323
  8000e60:	080012cd 	.word	0x080012cd
-        case SOCK_INIT: 
+        case SOCK_INIT:
             printf("\r\nFTP: Connected Wating...\r\n");
  8000e64:	48aa      	ldr	r0, [pc, #680]	; (8001110 <ftpc_proc+0x360>)
  8000e66:	f00d f86f 	bl	800df48 <puts>
-			if ((ret = connect(CTRL_SOCK, destIp, FTP_destport)) != SOCK_OK) {
+            if ((ret = connect(CTRL_SOCK, destIp, FTP_destport)) != SOCK_OK) {
  8000e6a:	4baa      	ldr	r3, [pc, #680]	; (8001114 <ftpc_proc+0x364>)
  8000e6c:	881b      	ldrh	r3, [r3, #0]
  8000e6e:	461a      	mov	r2, r3
@@ -1235,47 +1235,47 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8000e7c:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8000e7e:	2b01      	cmp	r3, #1
  8000e80:	d006      	beq.n	8000e90 <ftpc_proc+0xe0>
-				printf("FTP: Connect error.(%d)\r\n", CTRL_SOCK);
+                printf("FTP: Connect error.(%d)\r\n", CTRL_SOCK);
  8000e82:	2102      	movs	r1, #2
  8000e84:	48a4      	ldr	r0, [pc, #656]	; (8001118 <ftpc_proc+0x368>)
  8000e86:	f00c ffc5 	bl	800de14 <iprintf>
-				return ret;
+                return ret;
  8000e8a:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8000e8c:	b2db      	uxtb	r3, r3
  8000e8e:	e3d4      	b.n	800163a <ftpc_proc+0x88a>
-			}            
-			connect_state_control_ftpc = 0;
+            }
+            connect_state_control_ftpc = 0;
  8000e90:	4ba2      	ldr	r3, [pc, #648]	; (800111c <ftpc_proc+0x36c>)
  8000e92:	2200      	movs	r2, #0
  8000e94:	701a      	strb	r2, [r3, #0]
-			printf("FTP:Connectting...(%d)\r\n", CTRL_SOCK);
+            printf("FTP:Connectting...(%d)\r\n", CTRL_SOCK);
  8000e96:	2102      	movs	r1, #2
  8000e98:	48a1      	ldr	r0, [pc, #644]	; (8001120 <ftpc_proc+0x370>)
  8000e9a:	f00c ffbb 	bl	800de14 <iprintf>
-			break;
+            break;
  8000e9e:	e243      	b.n	8001328 <ftpc_proc+0x578>
-        
+
         case SOCK_ESTABLISHED:
             if (!connect_state_control_ftpc) {
  8000ea0:	4b9e      	ldr	r3, [pc, #632]	; (800111c <ftpc_proc+0x36c>)
  8000ea2:	781b      	ldrb	r3, [r3, #0]
  8000ea4:	2b00      	cmp	r3, #0
  8000ea6:	d10a      	bne.n	8000ebe <ftpc_proc+0x10e>
-    			printf("FTP:Connected(%d)\r\n", CTRL_SOCK);
+                printf("FTP:Connected(%d)\r\n", CTRL_SOCK);
  8000ea8:	2102      	movs	r1, #2
  8000eaa:	489e      	ldr	r0, [pc, #632]	; (8001124 <ftpc_proc+0x374>)
  8000eac:	f00c ffb2 	bl	800de14 <iprintf>
-    			strcpy(ftpc.workingdir, "/");
+                strcpy(ftpc.workingdir, "/");
  8000eb0:	4a9d      	ldr	r2, [pc, #628]	; (8001128 <ftpc_proc+0x378>)
  8000eb2:	4b9e      	ldr	r3, [pc, #632]	; (800112c <ftpc_proc+0x37c>)
  8000eb4:	881b      	ldrh	r3, [r3, #0]
  8000eb6:	8013      	strh	r3, [r2, #0]
-    			connect_state_control_ftpc = 1;
+                connect_state_control_ftpc = 1;
  8000eb8:	4b98      	ldr	r3, [pc, #608]	; (800111c <ftpc_proc+0x36c>)
  8000eba:	2201      	movs	r2, #1
  8000ebc:	701a      	strb	r2, [r3, #0]
-    		}           
-			
+            }
+
             /* SOCKET DATA RECEIVE */
             if ((size = getSn_RX_RSR(CTRL_SOCK)) > 0) {
  8000ebe:	2002      	movs	r0, #2
@@ -1285,69 +1285,69 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8000eca:	f8b7 3066 	ldrh.w	r3, [r7, #102]	; 0x66
  8000ece:	2b00      	cmp	r3, #0
  8000ed0:	f000 81f6 	beq.w	80012c0 <ftpc_proc+0x510>
-				memset(dbuf, 0, _MAX_SS);
+                memset(dbuf, 0, _MAX_SS);
  8000ed4:	f44f 6200 	mov.w	r2, #2048	; 0x800
  8000ed8:	2100      	movs	r1, #0
  8000eda:	68f8      	ldr	r0, [r7, #12]
  8000edc:	f00c f924 	bl	800d128 <memset>
-                if (size > _MAX_SS) 
+                if (size > _MAX_SS)
  8000ee0:	f8b7 3066 	ldrh.w	r3, [r7, #102]	; 0x66
  8000ee4:	f5b3 6f00 	cmp.w	r3, #2048	; 0x800
  8000ee8:	d903      	bls.n	8000ef2 <ftpc_proc+0x142>
-                   size = _MAX_SS - 1;
+                    size = _MAX_SS - 1;
  8000eea:	f240 73ff 	movw	r3, #2047	; 0x7ff
  8000eee:	f8a7 3066 	strh.w	r3, [r7, #102]	; 0x66
 
-    			ret = recv(CTRL_SOCK, dbuf, size);
+                ret = recv(CTRL_SOCK, dbuf, size);
  8000ef2:	f8b7 3066 	ldrh.w	r3, [r7, #102]	; 0x66
  8000ef6:	461a      	mov	r2, r3
  8000ef8:	68f9      	ldr	r1, [r7, #12]
  8000efa:	2002      	movs	r0, #2
  8000efc:	f001 feec 	bl	8002cd8 <recv>
  8000f00:	64f8      	str	r0, [r7, #76]	; 0x4c
-                
-    			dbuf[ret] = '\0';
+
+                dbuf[ret] = '\0';
  8000f02:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8000f04:	68fa      	ldr	r2, [r7, #12]
  8000f06:	4413      	add	r3, r2
  8000f08:	2200      	movs	r2, #0
  8000f0a:	701a      	strb	r2, [r3, #0]
-    			if (ret != size) {
+                if (ret != size) {
  8000f0c:	f8b7 3066 	ldrh.w	r3, [r7, #102]	; 0x66
  8000f10:	6cfa      	ldr	r2, [r7, #76]	; 0x4c
  8000f12:	429a      	cmp	r2, r3
  8000f14:	d012      	beq.n	8000f3c <ftpc_proc+0x18c>
-    				if (ret == SOCK_BUSY) return 0;
+                    if (ret == SOCK_BUSY) return 0;
  8000f16:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8000f18:	2b00      	cmp	r3, #0
  8000f1a:	d101      	bne.n	8000f20 <ftpc_proc+0x170>
  8000f1c:	2300      	movs	r3, #0
  8000f1e:	e38c      	b.n	800163a <ftpc_proc+0x88a>
-                    
-    				if (ret < 0) {
+
+                    if (ret < 0) {
  8000f20:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8000f22:	2b00      	cmp	r3, #0
  8000f24:	da0a      	bge.n	8000f3c <ftpc_proc+0x18c>
-    					printf("%d:recv() error:%ld\r\n", CTRL_SOCK, ret);
+                        printf("%d:recv() error:%ld\r\n", CTRL_SOCK, ret);
  8000f26:	6cfa      	ldr	r2, [r7, #76]	; 0x4c
  8000f28:	2102      	movs	r1, #2
  8000f2a:	4881      	ldr	r0, [pc, #516]	; (8001130 <ftpc_proc+0x380>)
  8000f2c:	f00c ff72 	bl	800de14 <iprintf>
-    					close(CTRL_SOCK);
+                        close(CTRL_SOCK);
  8000f30:	2002      	movs	r0, #2
  8000f32:	f001 fbbd 	bl	80026b0 <close>
-    					return ret;
+                        return ret;
  8000f36:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8000f38:	b2db      	uxtb	r3, r3
  8000f3a:	e37e      	b.n	800163a <ftpc_proc+0x88a>
-    				}
-    			}
+                    }
+                }
 
-    			for (int i = 0; i < strlen((char *)dbuf); i++) {
+                for (int i = 0; i < strlen((char *)dbuf); i++) {
  8000f3c:	2300      	movs	r3, #0
  8000f3e:	653b      	str	r3, [r7, #80]	; 0x50
  8000f40:	e01c      	b.n	8000f7c <ftpc_proc+0x1cc>
-                    if (dbuf[i] == '\r' && (strlen((char *)dbuf)-2) != i && dbuf[i+1] != '\n')
+                    if (dbuf[i] == '\r' && (strlen((char *)dbuf) - 2) != i && dbuf[i + 1] != '\n')
  8000f42:	6d3b      	ldr	r3, [r7, #80]	; 0x50
  8000f44:	68fa      	ldr	r2, [r7, #12]
  8000f46:	4413      	add	r3, r2
@@ -1368,13 +1368,13 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8000f66:	781b      	ldrb	r3, [r3, #0]
  8000f68:	2b0a      	cmp	r3, #10
  8000f6a:	d004      	beq.n	8000f76 <ftpc_proc+0x1c6>
-                        dbuf[i] = ' ';                    
+                        dbuf[i] = ' ';
  8000f6c:	6d3b      	ldr	r3, [r7, #80]	; 0x50
  8000f6e:	68fa      	ldr	r2, [r7, #12]
  8000f70:	4413      	add	r3, r2
  8000f72:	2220      	movs	r2, #32
  8000f74:	701a      	strb	r2, [r3, #0]
-    			for (int i = 0; i < strlen((char *)dbuf); i++) {
+                for (int i = 0; i < strlen((char *)dbuf); i++) {
  8000f76:	6d3b      	ldr	r3, [r7, #80]	; 0x50
  8000f78:	3301      	adds	r3, #1
  8000f7a:	653b      	str	r3, [r7, #80]	; 0x50
@@ -1384,20 +1384,20 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8000f84:	6d3b      	ldr	r3, [r7, #80]	; 0x50
  8000f86:	429a      	cmp	r2, r3
  8000f88:	d8db      	bhi.n	8000f42 <ftpc_proc+0x192>
-    			}
- 
-	            // printf("Rcvd Command : %s", dbuf);
+                }
+
+                // printf("Rcvd Command : %s", dbuf);
                 ftpc_parser(dbuf, user, pw);
  8000f8a:	687a      	ldr	r2, [r7, #4]
  8000f8c:	68b9      	ldr	r1, [r7, #8]
  8000f8e:	68f8      	ldr	r0, [r7, #12]
  8000f90:	f000 fcd0 	bl	8001934 <ftpc_parser>
-				if (gDataPutGetStart) {                
+                if (gDataPutGetStart) {
  8000f94:	4b67      	ldr	r3, [pc, #412]	; (8001134 <ftpc_proc+0x384>)
  8000f96:	781b      	ldrb	r3, [r3, #0]
  8000f98:	2b00      	cmp	r3, #0
  8000f9a:	f000 8191 	beq.w	80012c0 <ftpc_proc+0x510>
-					switch (Command.Second) {
+                    switch (Command.Second) {
  8000f9e:	4b66      	ldr	r3, [pc, #408]	; (8001138 <ftpc_proc+0x388>)
  8000fa0:	785b      	ldrb	r3, [r3, #1]
  8000fa2:	2b03      	cmp	r3, #3
@@ -1408,14 +1408,14 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8000fae:	d003      	beq.n	8000fb8 <ftpc_proc+0x208>
  8000fb0:	2b02      	cmp	r3, #2
  8000fb2:	f000 8101 	beq.w	80011b8 <ftpc_proc+0x408>
-							gDataPutGetStart = 0;
-							Command.Second = s_nocmd;
-							disconnect(DATA_SOCK);
-							break;
+                            gDataPutGetStart = 0;
+                            Command.Second = s_nocmd;
+                            disconnect(DATA_SOCK);
+                            break;
 
-						default: break;                        
+                        default: break;
  8000fb6:	e185      	b.n	80012c4 <ftpc_proc+0x514>
-							if ((size = getSn_RX_RSR(DATA_SOCK)) > 0) {   // Don't need to check SOCKERR_BUSY because it doesn't not occur.
+                            if ((size = getSn_RX_RSR(DATA_SOCK)) > 0) { 
  8000fb8:	2003      	movs	r0, #3
  8000fba:	f000 ff8e 	bl	8001eda <getSn_RX_RSR>
  8000fbe:	4603      	mov	r3, r0
@@ -1423,81 +1423,83 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8000fc4:	f8b7 3066 	ldrh.w	r3, [r7, #102]	; 0x66
  8000fc8:	2b00      	cmp	r3, #0
  8000fca:	f000 817d 	beq.w	80012c8 <ftpc_proc+0x518>
-								memset(dbuf, 0, _MAX_SS);
+                                memset(dbuf, 0, _MAX_SS);
  8000fce:	f44f 6200 	mov.w	r2, #2048	; 0x800
  8000fd2:	2100      	movs	r1, #0
  8000fd4:	68f8      	ldr	r0, [r7, #12]
  8000fd6:	f00c f8a7 	bl	800d128 <memset>
-								if (size > _MAX_SS) size = _MAX_SS - 1;
+                                if (size > _MAX_SS)
  8000fda:	f8b7 3066 	ldrh.w	r3, [r7, #102]	; 0x66
  8000fde:	f5b3 6f00 	cmp.w	r3, #2048	; 0x800
  8000fe2:	d903      	bls.n	8000fec <ftpc_proc+0x23c>
+                                    size = _MAX_SS - 1;
  8000fe4:	f240 73ff 	movw	r3, #2047	; 0x7ff
  8000fe8:	f8a7 3066 	strh.w	r3, [r7, #102]	; 0x66
-								ret = recv(DATA_SOCK, dbuf, size);
+                                ret = recv(DATA_SOCK, dbuf, size);
  8000fec:	f8b7 3066 	ldrh.w	r3, [r7, #102]	; 0x66
  8000ff0:	461a      	mov	r2, r3
  8000ff2:	68f9      	ldr	r1, [r7, #12]
  8000ff4:	2003      	movs	r0, #3
  8000ff6:	f001 fe6f 	bl	8002cd8 <recv>
  8000ffa:	64f8      	str	r0, [r7, #76]	; 0x4c
-								dbuf[ret] = '\0';
+                                dbuf[ret] = '\0';
  8000ffc:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8000ffe:	68fa      	ldr	r2, [r7, #12]
  8001000:	4413      	add	r3, r2
  8001002:	2200      	movs	r2, #0
  8001004:	701a      	strb	r2, [r3, #0]
-								if (ret != size) {
+                                if (ret != size) {
  8001006:	f8b7 3066 	ldrh.w	r3, [r7, #102]	; 0x66
  800100a:	6cfa      	ldr	r2, [r7, #76]	; 0x4c
  800100c:	429a      	cmp	r2, r3
  800100e:	d012      	beq.n	8001036 <ftpc_proc+0x286>
-									if (ret == SOCK_BUSY) return 0;
+                                    if (ret == SOCK_BUSY)
  8001010:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8001012:	2b00      	cmp	r3, #0
  8001014:	d101      	bne.n	800101a <ftpc_proc+0x26a>
+                                        return 0;
  8001016:	2300      	movs	r3, #0
  8001018:	e30f      	b.n	800163a <ftpc_proc+0x88a>
-									if (ret < 0) {
+                                    if (ret < 0) {
  800101a:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  800101c:	2b00      	cmp	r3, #0
  800101e:	da0a      	bge.n	8001036 <ftpc_proc+0x286>
-										printf("%d:recv() error:%ld\r\n", CTRL_SOCK, ret);
+                                        printf("%d:recv() error:%ld\r\n", CTRL_SOCK, ret);
  8001020:	6cfa      	ldr	r2, [r7, #76]	; 0x4c
  8001022:	2102      	movs	r1, #2
  8001024:	4842      	ldr	r0, [pc, #264]	; (8001130 <ftpc_proc+0x380>)
  8001026:	f00c fef5 	bl	800de14 <iprintf>
-										close(DATA_SOCK);
+                                        close(DATA_SOCK);
  800102a:	2003      	movs	r0, #3
  800102c:	f001 fb40 	bl	80026b0 <close>
-										return ret;
+                                        return ret;
  8001030:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8001032:	b2db      	uxtb	r3, r3
  8001034:	e301      	b.n	800163a <ftpc_proc+0x88a>
-								printf("Recv Data: \n\r%s\r\n", dbuf);
+                                printf("Recv Data: \n\r%s\r\n", dbuf);
  8001036:	68f9      	ldr	r1, [r7, #12]
  8001038:	4840      	ldr	r0, [pc, #256]	; (800113c <ftpc_proc+0x38c>)
  800103a:	f00c feeb 	bl	800de14 <iprintf>
-								gDataPutGetStart = 0;
+                                gDataPutGetStart = 0;
  800103e:	4b3d      	ldr	r3, [pc, #244]	; (8001134 <ftpc_proc+0x384>)
  8001040:	2200      	movs	r2, #0
  8001042:	701a      	strb	r2, [r3, #0]
-								Command.Second = s_nocmd;											
+                                Command.Second = s_nocmd;
  8001044:	4b3c      	ldr	r3, [pc, #240]	; (8001138 <ftpc_proc+0x388>)
  8001046:	2200      	movs	r2, #0
  8001048:	705a      	strb	r2, [r3, #1]
-							break;
+                            break;
  800104a:	e13d      	b.n	80012c8 <ftpc_proc+0x518>
-							printf("get waiting...\r\n");
+                            printf("get waiting...\r\n");
  800104c:	483c      	ldr	r0, [pc, #240]	; (8001140 <ftpc_proc+0x390>)
  800104e:	f00c ff7b 	bl	800df48 <puts>
-							if (strlen(ftpc.workingdir) == 1)
+                            if (strlen(ftpc.workingdir) == 1)
  8001052:	4835      	ldr	r0, [pc, #212]	; (8001128 <ftpc_proc+0x378>)
  8001054:	f7ff f8e8 	bl	8000228 <strlen>
  8001058:	4603      	mov	r3, r0
  800105a:	2b01      	cmp	r3, #1
  800105c:	d108      	bne.n	8001070 <ftpc_proc+0x2c0>
-								sprintf(ftpc.filename, "%s", ftpc_getDestFileName());
+                                sprintf(ftpc.filename, "%s", ftpc_getDestFileName());
  800105e:	f000 fb33 	bl	80016c8 <ftpc_getDestFileName>
  8001062:	4603      	mov	r3, r0
  8001064:	461a      	mov	r2, r3
@@ -1505,14 +1507,14 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8001068:	4837      	ldr	r0, [pc, #220]	; (8001148 <ftpc_proc+0x398>)
  800106a:	f00c ff79 	bl	800df60 <siprintf>
  800106e:	e007      	b.n	8001080 <ftpc_proc+0x2d0>
-								sprintf(ftpc.filename, "%s/%s", ftpc.workingdir, ftpc_getDestFileName());
+                                sprintf(ftpc.filename, "%s/%s", ftpc.workingdir, ftpc_getDestFileName());
  8001070:	f000 fb2a 	bl	80016c8 <ftpc_getDestFileName>
  8001074:	4603      	mov	r3, r0
  8001076:	4a2c      	ldr	r2, [pc, #176]	; (8001128 <ftpc_proc+0x378>)
  8001078:	4934      	ldr	r1, [pc, #208]	; (800114c <ftpc_proc+0x39c>)
  800107a:	4833      	ldr	r0, [pc, #204]	; (8001148 <ftpc_proc+0x398>)
  800107c:	f00c ff70 	bl	800df60 <siprintf>
-							ftpc.fr = f_open(&(ftpc.fil), (const char *)ftpc.filename, FA_CREATE_ALWAYS | FA_WRITE);
+                            ftpc.fr = f_open(&(ftpc.fil), (const char *)ftpc.filename, FA_CREATE_ALWAYS | FA_WRITE);
  8001080:	220a      	movs	r2, #10
  8001082:	4931      	ldr	r1, [pc, #196]	; (8001148 <ftpc_proc+0x398>)
  8001084:	4832      	ldr	r0, [pc, #200]	; (8001150 <ftpc_proc+0x3a0>)
@@ -1521,12 +1523,12 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  800108c:	461a      	mov	r2, r3
  800108e:	4b31      	ldr	r3, [pc, #196]	; (8001154 <ftpc_proc+0x3a4>)
  8001090:	f883 28fc 	strb.w	r2, [r3, #2300]	; 0x8fc
-							if (ftpc.fr == FR_OK) {								
+                            if (ftpc.fr == FR_OK) {
  8001094:	4b2f      	ldr	r3, [pc, #188]	; (8001154 <ftpc_proc+0x3a4>)
  8001096:	f893 38fc 	ldrb.w	r3, [r3, #2300]	; 0x8fc
  800109a:	2b00      	cmp	r3, #0
  800109c:	f040 8084 	bne.w	80011a8 <ftpc_proc+0x3f8>
-									if ((remain_datasize = getSn_RX_RSR(DATA_SOCK)) > 0) {
+                                    if ((remain_datasize = getSn_RX_RSR(DATA_SOCK)) > 0) {
  80010a0:	2003      	movs	r0, #3
  80010a2:	f000 ff1a 	bl	8001eda <getSn_RX_RSR>
  80010a6:	4603      	mov	r3, r0
@@ -1534,18 +1536,18 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80010aa:	6d7b      	ldr	r3, [r7, #84]	; 0x54
  80010ac:	2b00      	cmp	r3, #0
  80010ae:	d063      	beq.n	8001178 <ftpc_proc+0x3c8>
-											if (remain_datasize > _MAX_SS)	
+                                            if (remain_datasize > _MAX_SS)
  80010b0:	6d7b      	ldr	r3, [r7, #84]	; 0x54
  80010b2:	f5b3 6f00 	cmp.w	r3, #2048	; 0x800
  80010b6:	d903      	bls.n	80010c0 <ftpc_proc+0x310>
-												recv_byte = _MAX_SS;
+                                                recv_byte = _MAX_SS;
  80010b8:	f44f 6300 	mov.w	r3, #2048	; 0x800
  80010bc:	65fb      	str	r3, [r7, #92]	; 0x5c
  80010be:	e001      	b.n	80010c4 <ftpc_proc+0x314>
-												recv_byte = remain_datasize;
+                                                recv_byte = remain_datasize;
  80010c0:	6d7b      	ldr	r3, [r7, #84]	; 0x54
  80010c2:	65fb      	str	r3, [r7, #92]	; 0x5c
-											ret = recv(DATA_SOCK, dbuf, recv_byte);											
+                                            ret = recv(DATA_SOCK, dbuf, recv_byte);
  80010c4:	6dfb      	ldr	r3, [r7, #92]	; 0x5c
  80010c6:	b29b      	uxth	r3, r3
  80010c8:	461a      	mov	r2, r3
@@ -1553,7 +1555,7 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80010cc:	2003      	movs	r0, #3
  80010ce:	f001 fe03 	bl	8002cd8 <recv>
  80010d2:	64f8      	str	r0, [r7, #76]	; 0x4c
-											ftpc.fr = f_write(&(ftpc.fil), (const void *)dbuf, (UINT)ret, (UINT *)&blocklen);
+                                            ftpc.fr = f_write(&(ftpc.fil), (const void *)dbuf, (UINT)ret, (UINT *)&blocklen);
  80010d4:	6cfa      	ldr	r2, [r7, #76]	; 0x4c
  80010d6:	f107 0314 	add.w	r3, r7, #20
  80010da:	68f9      	ldr	r1, [r7, #12]
@@ -1563,26 +1565,26 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80010e4:	461a      	mov	r2, r3
  80010e6:	4b1b      	ldr	r3, [pc, #108]	; (8001154 <ftpc_proc+0x3a4>)
  80010e8:	f883 28fc 	strb.w	r2, [r3, #2300]	; 0x8fc
-											remain_datasize -= blocklen;
+                                            remain_datasize -= blocklen;
  80010ec:	697b      	ldr	r3, [r7, #20]
  80010ee:	6d7a      	ldr	r2, [r7, #84]	; 0x54
  80010f0:	1ad3      	subs	r3, r2, r3
  80010f2:	657b      	str	r3, [r7, #84]	; 0x54
-											if (ftpc.fr != FR_OK) {
+                                            if (ftpc.fr != FR_OK) {
  80010f4:	4b17      	ldr	r3, [pc, #92]	; (8001154 <ftpc_proc+0x3a4>)
  80010f6:	f893 38fc 	ldrb.w	r3, [r3, #2300]	; 0x8fc
  80010fa:	2b00      	cmp	r3, #0
  80010fc:	d003      	beq.n	8001106 <ftpc_proc+0x356>
-												printf("f_write failed\r\n");
+                                                printf("f_write failed\r\n");
  80010fe:	4816      	ldr	r0, [pc, #88]	; (8001158 <ftpc_proc+0x3a8>)
  8001100:	f00c ff22 	bl	800df48 <puts>
-												break;
+                                                break;
  8001104:	e02b      	b.n	800115e <ftpc_proc+0x3ae>
-											if (remain_datasize <= 0) break;
+                                            if (remain_datasize <= 0)
  8001106:	6d7b      	ldr	r3, [r7, #84]	; 0x54
  8001108:	2b00      	cmp	r3, #0
  800110a:	d027      	beq.n	800115c <ftpc_proc+0x3ac>
-											if (remain_datasize > _MAX_SS)	
+                                            if (remain_datasize > _MAX_SS)
  800110c:	e7d0      	b.n	80010b0 <ftpc_proc+0x300>
  800110e:	bf00      	nop
  8001110:	08011c4c 	.word	0x08011c4c
@@ -1604,69 +1606,69 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8001150:	2000032c 	.word	0x2000032c
  8001154:	2000025c 	.word	0x2000025c
  8001158:	08011cfc 	.word	0x08011cfc
-											if (remain_datasize <= 0) break;
+                                                break;
  800115c:	bf00      	nop
-										if (ftpc.fr != FR_OK) {
+                                        if (ftpc.fr != FR_OK) {
  800115e:	4b9d      	ldr	r3, [pc, #628]	; (80013d4 <ftpc_proc+0x624>)
  8001160:	f893 38fc 	ldrb.w	r3, [r3, #2300]	; 0x8fc
  8001164:	2b00      	cmp	r3, #0
  8001166:	d003      	beq.n	8001170 <ftpc_proc+0x3c0>
-											printf("f_write failed\r\n");
+                                            printf("f_write failed\r\n");
  8001168:	489b      	ldr	r0, [pc, #620]	; (80013d8 <ftpc_proc+0x628>)
  800116a:	f00c feed 	bl	800df48 <puts>
-											break;
+                                            break;
  800116e:	e00c      	b.n	800118a <ftpc_proc+0x3da>
-										printf("#");
+                                        printf("#");
  8001170:	2023      	movs	r0, #35	; 0x23
  8001172:	f00c fe67 	bl	800de44 <putchar>
  8001176:	e793      	b.n	80010a0 <ftpc_proc+0x2f0>
-										if (getSn_SR(DATA_SOCK) != SOCK_ESTABLISHED) break;
+                                        if (getSn_SR(DATA_SOCK) != SOCK_ESTABLISHED)
  8001178:	f44f 705a 	mov.w	r0, #872	; 0x368
  800117c:	f000 fd08 	bl	8001b90 <WIZCHIP_READ>
  8001180:	4603      	mov	r3, r0
  8001182:	2b17      	cmp	r3, #23
  8001184:	d100      	bne.n	8001188 <ftpc_proc+0x3d8>
-									if ((remain_datasize = getSn_RX_RSR(DATA_SOCK)) > 0) {
+                                    if ((remain_datasize = getSn_RX_RSR(DATA_SOCK)) > 0) {
  8001186:	e78b      	b.n	80010a0 <ftpc_proc+0x2f0>
-										if (getSn_SR(DATA_SOCK) != SOCK_ESTABLISHED) break;
+                                            break;
  8001188:	bf00      	nop
-								printf("\r\nFile write finished\r\n");
+                                printf("\r\nFile write finished\r\n");
  800118a:	4894      	ldr	r0, [pc, #592]	; (80013dc <ftpc_proc+0x62c>)
  800118c:	f00c fedc 	bl	800df48 <puts>
-								ftpc.fr = f_close(&(ftpc.fil));
+                                ftpc.fr = f_close(&(ftpc.fil));
  8001190:	4893      	ldr	r0, [pc, #588]	; (80013e0 <ftpc_proc+0x630>)
  8001192:	f00a ff18 	bl	800bfc6 <f_close>
  8001196:	4603      	mov	r3, r0
  8001198:	461a      	mov	r2, r3
  800119a:	4b8e      	ldr	r3, [pc, #568]	; (80013d4 <ftpc_proc+0x624>)
  800119c:	f883 28fc 	strb.w	r2, [r3, #2300]	; 0x8fc
-								gDataPutGetStart = 0;
+                                gDataPutGetStart = 0;
  80011a0:	4b90      	ldr	r3, [pc, #576]	; (80013e4 <ftpc_proc+0x634>)
  80011a2:	2200      	movs	r2, #0
  80011a4:	701a      	strb	r2, [r3, #0]
-							break;
+                            break;
  80011a6:	e090      	b.n	80012ca <ftpc_proc+0x51a>
-								printf("File Open Error: %d\r\n", ftpc.fr);    												
+                                printf("File Open Error: %d\r\n", ftpc.fr);
  80011a8:	4b8a      	ldr	r3, [pc, #552]	; (80013d4 <ftpc_proc+0x624>)
  80011aa:	f893 38fc 	ldrb.w	r3, [r3, #2300]	; 0x8fc
  80011ae:	4619      	mov	r1, r3
  80011b0:	488d      	ldr	r0, [pc, #564]	; (80013e8 <ftpc_proc+0x638>)
  80011b2:	f00c fe2f 	bl	800de14 <iprintf>
-							break;
+                            break;
  80011b6:	e088      	b.n	80012ca <ftpc_proc+0x51a>
-							printf("file name = %s\r\n", ftpc_getSouceFileName());
+                            printf("file name = %s\r\n", ftpc_getSouceFileName());
  80011b8:	f000 fa7c 	bl	80016b4 <ftpc_getSouceFileName>
  80011bc:	4603      	mov	r3, r0
  80011be:	4619      	mov	r1, r3
  80011c0:	488a      	ldr	r0, [pc, #552]	; (80013ec <ftpc_proc+0x63c>)
  80011c2:	f00c fe27 	bl	800de14 <iprintf>
-							if (strlen(ftpc.workingdir) == 1)
+                            if (strlen(ftpc.workingdir) == 1)
  80011c6:	488a      	ldr	r0, [pc, #552]	; (80013f0 <ftpc_proc+0x640>)
  80011c8:	f7ff f82e 	bl	8000228 <strlen>
  80011cc:	4603      	mov	r3, r0
  80011ce:	2b01      	cmp	r3, #1
  80011d0:	d108      	bne.n	80011e4 <ftpc_proc+0x434>
-								sprintf(ftpc.filename, "%s", (uint8_t *)ftpc_getSouceFileName());
+                                sprintf(ftpc.filename, "%s", (uint8_t *)ftpc_getSouceFileName());
  80011d2:	f000 fa6f 	bl	80016b4 <ftpc_getSouceFileName>
  80011d6:	4603      	mov	r3, r0
  80011d8:	461a      	mov	r2, r3
@@ -1674,14 +1676,14 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80011dc:	4886      	ldr	r0, [pc, #536]	; (80013f8 <ftpc_proc+0x648>)
  80011de:	f00c febf 	bl	800df60 <siprintf>
  80011e2:	e007      	b.n	80011f4 <ftpc_proc+0x444>
-								sprintf(ftpc.filename, "%s/%s", ftpc.workingdir, (uint8_t *)ftpc_getSouceFileName());
+                                sprintf(ftpc.filename, "%s/%s", ftpc.workingdir, (uint8_t *)ftpc_getSouceFileName());
  80011e4:	f000 fa66 	bl	80016b4 <ftpc_getSouceFileName>
  80011e8:	4603      	mov	r3, r0
  80011ea:	4a81      	ldr	r2, [pc, #516]	; (80013f0 <ftpc_proc+0x640>)
  80011ec:	4983      	ldr	r1, [pc, #524]	; (80013fc <ftpc_proc+0x64c>)
  80011ee:	4882      	ldr	r0, [pc, #520]	; (80013f8 <ftpc_proc+0x648>)
  80011f0:	f00c feb6 	bl	800df60 <siprintf>
-							ftpc.fr = f_open(&(ftpc.fil), (const char *)ftpc.filename, FA_READ);
+                            ftpc.fr = f_open(&(ftpc.fil), (const char *)ftpc.filename, FA_READ);
  80011f4:	2201      	movs	r2, #1
  80011f6:	4980      	ldr	r1, [pc, #512]	; (80013f8 <ftpc_proc+0x648>)
  80011f8:	4879      	ldr	r0, [pc, #484]	; (80013e0 <ftpc_proc+0x630>)
@@ -1690,32 +1692,32 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8001200:	461a      	mov	r2, r3
  8001202:	4b74      	ldr	r3, [pc, #464]	; (80013d4 <ftpc_proc+0x624>)
  8001204:	f883 28fc 	strb.w	r2, [r3, #2300]	; 0x8fc
-							if (ftpc.fr == FR_OK) {
+                            if (ftpc.fr == FR_OK) {
  8001208:	4b72      	ldr	r3, [pc, #456]	; (80013d4 <ftpc_proc+0x624>)
  800120a:	f893 38fc 	ldrb.w	r3, [r3, #2300]	; 0x8fc
  800120e:	2b00      	cmp	r3, #0
  8001210:	d13d      	bne.n	800128e <ftpc_proc+0x4de>
-								remain_filesize = f_size(&(ftpc.fil));
+                                remain_filesize = f_size(&(ftpc.fil));
  8001212:	4b70      	ldr	r3, [pc, #448]	; (80013d4 <ftpc_proc+0x624>)
  8001214:	f8d3 38dc 	ldr.w	r3, [r3, #2268]	; 0x8dc
  8001218:	65bb      	str	r3, [r7, #88]	; 0x58
-									memset(dbuf, 0, _MAX_SS);
+                                    memset(dbuf, 0, _MAX_SS);
  800121a:	f44f 6200 	mov.w	r2, #2048	; 0x800
  800121e:	2100      	movs	r1, #0
  8001220:	68f8      	ldr	r0, [r7, #12]
  8001222:	f00b ff81 	bl	800d128 <memset>
-									if (remain_filesize > _MAX_SS)
+                                    if (remain_filesize > _MAX_SS)
  8001226:	6dbb      	ldr	r3, [r7, #88]	; 0x58
  8001228:	f5b3 6f00 	cmp.w	r3, #2048	; 0x800
  800122c:	d903      	bls.n	8001236 <ftpc_proc+0x486>
-										send_byte = _MAX_SS;
+                                        send_byte = _MAX_SS;
  800122e:	f44f 6300 	mov.w	r3, #2048	; 0x800
  8001232:	663b      	str	r3, [r7, #96]	; 0x60
  8001234:	e001      	b.n	800123a <ftpc_proc+0x48a>
-										send_byte = remain_filesize;
+                                        send_byte = remain_filesize;
  8001236:	6dbb      	ldr	r3, [r7, #88]	; 0x58
  8001238:	663b      	str	r3, [r7, #96]	; 0x60
-									ftpc.fr = f_read(&(ftpc.fil), (void *)dbuf, send_byte , (UINT *)&blocklen);
+                                    ftpc.fr = f_read(&(ftpc.fil), (void *)dbuf, send_byte, (UINT *)&blocklen);
  800123a:	f107 0314 	add.w	r3, r7, #20
  800123e:	6e3a      	ldr	r2, [r7, #96]	; 0x60
  8001240:	68f9      	ldr	r1, [r7, #12]
@@ -1725,31 +1727,31 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  800124a:	461a      	mov	r2, r3
  800124c:	4b61      	ldr	r3, [pc, #388]	; (80013d4 <ftpc_proc+0x624>)
  800124e:	f883 28fc 	strb.w	r2, [r3, #2300]	; 0x8fc
-									if (ftpc.fr != FR_OK) break;
+                                    if (ftpc.fr != FR_OK)
  8001252:	4b60      	ldr	r3, [pc, #384]	; (80013d4 <ftpc_proc+0x624>)
  8001254:	f893 38fc 	ldrb.w	r3, [r3, #2300]	; 0x8fc
  8001258:	2b00      	cmp	r3, #0
  800125a:	d10e      	bne.n	800127a <ftpc_proc+0x4ca>
-									send(DATA_SOCK, dbuf, blocklen);
+                                    send(DATA_SOCK, dbuf, blocklen);
  800125c:	697b      	ldr	r3, [r7, #20]
  800125e:	b29b      	uxth	r3, r3
  8001260:	461a      	mov	r2, r3
  8001262:	68f9      	ldr	r1, [r7, #12]
  8001264:	2003      	movs	r0, #3
  8001266:	f001 fc3d 	bl	8002ae4 <send>
-									remain_filesize -= blocklen;
+                                    remain_filesize -= blocklen;
  800126a:	697b      	ldr	r3, [r7, #20]
  800126c:	6dba      	ldr	r2, [r7, #88]	; 0x58
  800126e:	1ad3      	subs	r3, r2, r3
  8001270:	65bb      	str	r3, [r7, #88]	; 0x58
-								} while (remain_filesize != 0);
+                                } while (remain_filesize != 0);
  8001272:	6dbb      	ldr	r3, [r7, #88]	; 0x58
  8001274:	2b00      	cmp	r3, #0
  8001276:	d1d0      	bne.n	800121a <ftpc_proc+0x46a>
  8001278:	e000      	b.n	800127c <ftpc_proc+0x4cc>
-									if (ftpc.fr != FR_OK) break;
+                                        break;
  800127a:	bf00      	nop
-								ftpc.fr = f_close(&(ftpc.fil));
+                                ftpc.fr = f_close(&(ftpc.fil));
  800127c:	4858      	ldr	r0, [pc, #352]	; (80013e0 <ftpc_proc+0x630>)
  800127e:	f00a fea2 	bl	800bfc6 <f_close>
  8001282:	4603      	mov	r3, r0
@@ -1757,40 +1759,40 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8001286:	4b53      	ldr	r3, [pc, #332]	; (80013d4 <ftpc_proc+0x624>)
  8001288:	f883 28fc 	strb.w	r2, [r3, #2300]	; 0x8fc
  800128c:	e00e      	b.n	80012ac <ftpc_proc+0x4fc>
-								printf("File Open Error: %d\r\n", ftpc.fr);
+                                printf("File Open Error: %d\r\n", ftpc.fr);
  800128e:	4b51      	ldr	r3, [pc, #324]	; (80013d4 <ftpc_proc+0x624>)
  8001290:	f893 38fc 	ldrb.w	r3, [r3, #2300]	; 0x8fc
  8001294:	4619      	mov	r1, r3
  8001296:	4854      	ldr	r0, [pc, #336]	; (80013e8 <ftpc_proc+0x638>)
  8001298:	f00c fdbc 	bl	800de14 <iprintf>
-								ftpc.fr = f_close(&(ftpc.fil));
+                                ftpc.fr = f_close(&(ftpc.fil));
  800129c:	4850      	ldr	r0, [pc, #320]	; (80013e0 <ftpc_proc+0x630>)
  800129e:	f00a fe92 	bl	800bfc6 <f_close>
  80012a2:	4603      	mov	r3, r0
  80012a4:	461a      	mov	r2, r3
  80012a6:	4b4b      	ldr	r3, [pc, #300]	; (80013d4 <ftpc_proc+0x624>)
  80012a8:	f883 28fc 	strb.w	r2, [r3, #2300]	; 0x8fc
-							gDataPutGetStart = 0;
+                            gDataPutGetStart = 0;
  80012ac:	4b4d      	ldr	r3, [pc, #308]	; (80013e4 <ftpc_proc+0x634>)
  80012ae:	2200      	movs	r2, #0
  80012b0:	701a      	strb	r2, [r3, #0]
-							Command.Second = s_nocmd;
+                            Command.Second = s_nocmd;
  80012b2:	4b53      	ldr	r3, [pc, #332]	; (8001400 <ftpc_proc+0x650>)
  80012b4:	2200      	movs	r2, #0
  80012b6:	705a      	strb	r2, [r3, #1]
-							disconnect(DATA_SOCK);
+                            disconnect(DATA_SOCK);
  80012b8:	2003      	movs	r0, #3
  80012ba:	f001 fb9d 	bl	80029f8 <disconnect>
-							break;
+                            break;
  80012be:	e004      	b.n	80012ca <ftpc_proc+0x51a>
-					}
-            	}  
+                    }
+                }
  80012c0:	bf00      	nop
  80012c2:	e031      	b.n	8001328 <ftpc_proc+0x578>
-						default: break;                        
+                        default: break;
  80012c4:	bf00      	nop
  80012c6:	e02f      	b.n	8001328 <ftpc_proc+0x578>
-							break;
+                            break;
  80012c8:	bf00      	nop
             }
             break;
@@ -1801,7 +1803,7 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80012cc:	2102      	movs	r1, #2
  80012ce:	484d      	ldr	r0, [pc, #308]	; (8001404 <ftpc_proc+0x654>)
  80012d0:	f00c fda0 	bl	800de14 <iprintf>
-    		if ((ret = disconnect(CTRL_SOCK)) != SOCK_OK) return ret;            
+            if ((ret = disconnect(CTRL_SOCK)) != SOCK_OK)
  80012d4:	2002      	movs	r0, #2
  80012d6:	f001 fb8f 	bl	80029f8 <disconnect>
  80012da:	4603      	mov	r3, r0
@@ -1809,18 +1811,19 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80012de:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  80012e0:	2b01      	cmp	r3, #1
  80012e2:	d002      	beq.n	80012ea <ftpc_proc+0x53a>
+                return ret;
  80012e4:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  80012e6:	b2db      	uxtb	r3, r3
  80012e8:	e1a7      	b.n	800163a <ftpc_proc+0x88a>
-    		printf("FTP:Closed(%d)\r\n", CTRL_SOCK);    		         
+            printf("FTP:Closed(%d)\r\n", CTRL_SOCK);
  80012ea:	2102      	movs	r1, #2
  80012ec:	4846      	ldr	r0, [pc, #280]	; (8001408 <ftpc_proc+0x658>)
  80012ee:	f00c fd91 	bl	800de14 <iprintf>
-    		break;
+            break;
  80012f2:	e019      	b.n	8001328 <ftpc_proc+0x578>
-            
-    	case SOCK_CLOSED:
-    		if ((ret = socket(CTRL_SOCK, Sn_MR_TCP, FTP_destport, SF_IO_NONBLOCK)) != CTRL_SOCK) {
+
+        case SOCK_CLOSED:
+            if ((ret = socket(CTRL_SOCK, Sn_MR_TCP, FTP_destport, SF_IO_NONBLOCK)) != CTRL_SOCK)
  80012f4:	4b45      	ldr	r3, [pc, #276]	; (800140c <ftpc_proc+0x65c>)
  80012f6:	881a      	ldrh	r2, [r3, #0]
  80012f8:	2301      	movs	r3, #1
@@ -1832,38 +1835,39 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8001306:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8001308:	2b02      	cmp	r3, #2
  800130a:	d00c      	beq.n	8001326 <ftpc_proc+0x576>
-    			printf("%d:socket() error:%ld\r\n", CTRL_SOCK, ret);
+            {
+                printf("%d:socket() error:%ld\r\n", CTRL_SOCK, ret);
  800130c:	6cfa      	ldr	r2, [r7, #76]	; 0x4c
  800130e:	2102      	movs	r1, #2
  8001310:	483f      	ldr	r0, [pc, #252]	; (8001410 <ftpc_proc+0x660>)
  8001312:	f00c fd7f 	bl	800de14 <iprintf>
-    			close(CTRL_SOCK);
+                close(CTRL_SOCK);
  8001316:	2002      	movs	r0, #2
  8001318:	f001 f9ca 	bl	80026b0 <close>
-    			return ret;
+                return ret;
  800131c:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  800131e:	b2db      	uxtb	r3, r3
  8001320:	e18b      	b.n	800163a <ftpc_proc+0x88a>
-    		}
-    		break;          
-            
-    	default: break;
+            }
+            break;
+
+        default: break;
  8001322:	bf00      	nop
  8001324:	e000      	b.n	8001328 <ftpc_proc+0x578>
-    		break;          
+            break;
  8001326:	bf00      	nop
     }
 
-	if (gDataSockReady) {    
+    if (gDataSockReady) {
  8001328:	4b3a      	ldr	r3, [pc, #232]	; (8001414 <ftpc_proc+0x664>)
  800132a:	781b      	ldrb	r3, [r3, #0]
  800132c:	2b00      	cmp	r3, #0
  800132e:	d04f      	beq.n	80013d0 <ftpc_proc+0x620>
-		gDataSockReady = 0;
+        gDataSockReady = 0;
  8001330:	4b38      	ldr	r3, [pc, #224]	; (8001414 <ftpc_proc+0x664>)
  8001332:	2200      	movs	r2, #0
  8001334:	701a      	strb	r2, [r3, #0]
-		switch (Command.First) {
+        switch (Command.First) {
  8001336:	4b32      	ldr	r3, [pc, #200]	; (8001400 <ftpc_proc+0x650>)
  8001338:	781b      	ldrb	r3, [r3, #0]
  800133a:	2b03      	cmp	r3, #3
@@ -1874,19 +1878,19 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8001344:	d002      	beq.n	800134c <ftpc_proc+0x59c>
  8001346:	2b02      	cmp	r3, #2
  8001348:	d014      	beq.n	8001374 <ftpc_proc+0x5c4>
-			case f_get:				
-				sprintf((char *)dat, "RETR %s\r\n", ftpc_getSouceFileName());				
-				send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
-				break;
-				
-			default: break;
+            case f_get:
+                sprintf((char *)dat, "RETR %s\r\n", ftpc_getSouceFileName());
+                send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+                break;
+
+            default: break;
  800134a:	e06b      	b.n	8001424 <ftpc_proc+0x674>
-				sprintf((char *)dat, "LIST\r\n");
+                sprintf((char *)dat, "LIST\r\n");
  800134c:	f107 0318 	add.w	r3, r7, #24
  8001350:	4931      	ldr	r1, [pc, #196]	; (8001418 <ftpc_proc+0x668>)
  8001352:	4618      	mov	r0, r3
  8001354:	f00c fe04 	bl	800df60 <siprintf>
-				send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+                send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
  8001358:	f107 0318 	add.w	r3, r7, #24
  800135c:	4618      	mov	r0, r3
  800135e:	f7fe ff63 	bl	8000228 <strlen>
@@ -1896,16 +1900,16 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  800136a:	4619      	mov	r1, r3
  800136c:	2002      	movs	r0, #2
  800136e:	f001 fbb9 	bl	8002ae4 <send>
-				break;
+                break;
  8001372:	e058      	b.n	8001426 <ftpc_proc+0x676>
-				sprintf((char *)dat, "STOR %s\r\n", ftpc_getDestFileName());				
+                sprintf((char *)dat, "STOR %s\r\n", ftpc_getDestFileName());
  8001374:	f000 f9a8 	bl	80016c8 <ftpc_getDestFileName>
  8001378:	4602      	mov	r2, r0
  800137a:	f107 0318 	add.w	r3, r7, #24
  800137e:	4927      	ldr	r1, [pc, #156]	; (800141c <ftpc_proc+0x66c>)
  8001380:	4618      	mov	r0, r3
  8001382:	f00c fded 	bl	800df60 <siprintf>
-				send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+                send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
  8001386:	f107 0318 	add.w	r3, r7, #24
  800138a:	4618      	mov	r0, r3
  800138c:	f7fe ff4c 	bl	8000228 <strlen>
@@ -1915,16 +1919,16 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8001398:	4619      	mov	r1, r3
  800139a:	2002      	movs	r0, #2
  800139c:	f001 fba2 	bl	8002ae4 <send>
-				break;
+                break;
  80013a0:	e041      	b.n	8001426 <ftpc_proc+0x676>
-				sprintf((char *)dat, "RETR %s\r\n", ftpc_getSouceFileName());				
+                sprintf((char *)dat, "RETR %s\r\n", ftpc_getSouceFileName());
  80013a2:	f000 f987 	bl	80016b4 <ftpc_getSouceFileName>
  80013a6:	4602      	mov	r2, r0
  80013a8:	f107 0318 	add.w	r3, r7, #24
  80013ac:	491c      	ldr	r1, [pc, #112]	; (8001420 <ftpc_proc+0x670>)
  80013ae:	4618      	mov	r0, r3
  80013b0:	f00c fdd6 	bl	800df60 <siprintf>
-				send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+                send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
  80013b4:	f107 0318 	add.w	r3, r7, #24
  80013b8:	4618      	mov	r0, r3
  80013ba:	f7fe ff35 	bl	8000228 <strlen>
@@ -1934,10 +1938,10 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80013c6:	4619      	mov	r1, r3
  80013c8:	2002      	movs	r0, #2
  80013ca:	f001 fb8b 	bl	8002ae4 <send>
-				break;
+                break;
  80013ce:	e02a      	b.n	8001426 <ftpc_proc+0x676>
-		}
-	}    
+        }
+    }
  80013d0:	bf00      	nop
  80013d2:	e028      	b.n	8001426 <ftpc_proc+0x676>
  80013d4:	2000025c 	.word	0x2000025c
@@ -1960,11 +1964,11 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8001418:	08011d90 	.word	0x08011d90
  800141c:	08011d98 	.word	0x08011d98
  8001420:	08011da4 	.word	0x08011da4
-			default: break;
+            default: break;
  8001424:	bf00      	nop
 
     /* DATA SOCKET */
-    switch (getSn_SR(DATA_SOCK)) {        
+    switch (getSn_SR(DATA_SOCK)) {
  8001426:	f44f 705a 	mov.w	r0, #872	; 0x368
  800142a:	f000 fbb1 	bl	8001b90 <WIZCHIP_READ>
  800142e:	4603      	mov	r3, r0
@@ -2001,7 +2005,7 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80014a4:	0800162b 	.word	0x0800162b
  80014a8:	0800162b 	.word	0x0800162b
  80014ac:	08001557 	.word	0x08001557
-        case SOCK_ESTABLISHED :            
+        case SOCK_ESTABLISHED:
             if (!connect_state_data_ftpc) {
  80014b0:	4b64      	ldr	r3, [pc, #400]	; (8001644 <ftpc_proc+0x894>)
  80014b2:	781b      	ldrb	r3, [r3, #0]
@@ -2015,18 +2019,18 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80014c2:	4b60      	ldr	r3, [pc, #384]	; (8001644 <ftpc_proc+0x894>)
  80014c4:	2201      	movs	r2, #1
  80014c6:	701a      	strb	r2, [r3, #0]
-            }     			          
+            }
             break;
  80014c8:	e0b1      	b.n	800162e <ftpc_proc+0x87e>
-    
-        case SOCK_INIT :
-//	   		printf("%d:Opened\r\n", DATA_SOCK);
-   			if (ftpc.dsock_mode == FTPC_ACTIVE_MODE) {
+
+        case SOCK_INIT:
+            //	   		printf("%d:Opened\r\n", DATA_SOCK);
+            if (ftpc.dsock_mode == FTPC_ACTIVE_MODE) {
  80014ca:	4b60      	ldr	r3, [pc, #384]	; (800164c <ftpc_proc+0x89c>)
  80014cc:	791b      	ldrb	r3, [r3, #4]
  80014ce:	2b01      	cmp	r3, #1
  80014d0:	d112      	bne.n	80014f8 <ftpc_proc+0x748>
-   				if ((ret = listen(DATA_SOCK)) != SOCK_OK) {
+                if ((ret = listen(DATA_SOCK)) != SOCK_OK) {
  80014d2:	2003      	movs	r0, #3
  80014d4:	f001 f95a 	bl	800278c <listen>
  80014d8:	4603      	mov	r3, r0
@@ -2034,43 +2038,43 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80014dc:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  80014de:	2b01      	cmp	r3, #1
  80014e0:	d006      	beq.n	80014f0 <ftpc_proc+0x740>
-   					printf("%d:Listen error\r\n", DATA_SOCK);                   
+                    printf("%d:Listen error\r\n", DATA_SOCK);
  80014e2:	2103      	movs	r1, #3
  80014e4:	485a      	ldr	r0, [pc, #360]	; (8001650 <ftpc_proc+0x8a0>)
  80014e6:	f00c fc95 	bl	800de14 <iprintf>
-   					return ret;
+                    return ret;
  80014ea:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  80014ec:	b2db      	uxtb	r3, r3
  80014ee:	e0a4      	b.n	800163a <ftpc_proc+0x88a>
-   				}
-   				gDataSockReady = 1;
+                }
+                gDataSockReady = 1;
  80014f0:	4b58      	ldr	r3, [pc, #352]	; (8001654 <ftpc_proc+0x8a4>)
  80014f2:	2201      	movs	r2, #1
  80014f4:	701a      	strb	r2, [r3, #0]
  80014f6:	e02a      	b.n	800154e <ftpc_proc+0x79e>
-//	   			printf("%d:Listen ok\r\n", DATA_SOCK);
-   			}
+                //	   			printf("%d:Listen ok\r\n", DATA_SOCK);
+            }
             else {
-                printf("remote ip : %d.%d.%d.%d, port = %d\r\n", 
-                       ftpc_remote_ip.cVal[0], ftpc_remote_ip.cVal[1], ftpc_remote_ip.cVal[2], 
+                printf("remote ip : %d.%d.%d.%d, port = %d\r\n",
+                    ftpc_remote_ip.cVal[0], ftpc_remote_ip.cVal[1], ftpc_remote_ip.cVal[2],
  80014f8:	4b57      	ldr	r3, [pc, #348]	; (8001658 <ftpc_proc+0x8a8>)
  80014fa:	781b      	ldrb	r3, [r3, #0]
-                printf("remote ip : %d.%d.%d.%d, port = %d\r\n", 
+                printf("remote ip : %d.%d.%d.%d, port = %d\r\n",
  80014fc:	4619      	mov	r1, r3
-                       ftpc_remote_ip.cVal[0], ftpc_remote_ip.cVal[1], ftpc_remote_ip.cVal[2], 
+                    ftpc_remote_ip.cVal[0], ftpc_remote_ip.cVal[1], ftpc_remote_ip.cVal[2],
  80014fe:	4b56      	ldr	r3, [pc, #344]	; (8001658 <ftpc_proc+0x8a8>)
  8001500:	785b      	ldrb	r3, [r3, #1]
-                printf("remote ip : %d.%d.%d.%d, port = %d\r\n", 
+                printf("remote ip : %d.%d.%d.%d, port = %d\r\n",
  8001502:	4618      	mov	r0, r3
-                       ftpc_remote_ip.cVal[0], ftpc_remote_ip.cVal[1], ftpc_remote_ip.cVal[2], 
+                    ftpc_remote_ip.cVal[0], ftpc_remote_ip.cVal[1], ftpc_remote_ip.cVal[2],
  8001504:	4b54      	ldr	r3, [pc, #336]	; (8001658 <ftpc_proc+0x8a8>)
  8001506:	789b      	ldrb	r3, [r3, #2]
-                printf("remote ip : %d.%d.%d.%d, port = %d\r\n", 
+                printf("remote ip : %d.%d.%d.%d, port = %d\r\n",
  8001508:	461c      	mov	r4, r3
-                       ftpc_remote_ip.cVal[3], ftpc_remote_port);
+                    ftpc_remote_ip.cVal[3], ftpc_remote_port);
  800150a:	4b53      	ldr	r3, [pc, #332]	; (8001658 <ftpc_proc+0x8a8>)
  800150c:	78db      	ldrb	r3, [r3, #3]
-                printf("remote ip : %d.%d.%d.%d, port = %d\r\n", 
+                printf("remote ip : %d.%d.%d.%d, port = %d\r\n",
  800150e:	461a      	mov	r2, r3
  8001510:	4b52      	ldr	r3, [pc, #328]	; (800165c <ftpc_proc+0x8ac>)
  8001512:	881b      	ldrh	r3, [r3, #0]
@@ -2080,8 +2084,8 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  800151a:	4602      	mov	r2, r0
  800151c:	4850      	ldr	r0, [pc, #320]	; (8001660 <ftpc_proc+0x8b0>)
  800151e:	f00c fc79 	bl	800de14 <iprintf>
-                
-   				if ((ret = connect(DATA_SOCK, ftpc_remote_ip.cVal, ftpc_remote_port)) != SOCK_OK) {
+
+                if ((ret = connect(DATA_SOCK, ftpc_remote_ip.cVal, ftpc_remote_port)) != SOCK_OK) {
  8001522:	4b4e      	ldr	r3, [pc, #312]	; (800165c <ftpc_proc+0x8ac>)
  8001524:	881b      	ldrh	r3, [r3, #0]
  8001526:	461a      	mov	r2, r3
@@ -2093,30 +2097,30 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  8001534:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8001536:	2b01      	cmp	r3, #1
  8001538:	d006      	beq.n	8001548 <ftpc_proc+0x798>
-   					printf("%d:Connect error\r\n", DATA_SOCK);
+                    printf("%d:Connect error\r\n", DATA_SOCK);
  800153a:	2103      	movs	r1, #3
  800153c:	4849      	ldr	r0, [pc, #292]	; (8001664 <ftpc_proc+0x8b4>)
  800153e:	f00c fc69 	bl	800de14 <iprintf>
-   					return ret;
+                    return ret;
  8001542:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8001544:	b2db      	uxtb	r3, r3
  8001546:	e078      	b.n	800163a <ftpc_proc+0x88a>
-   				}
-   				gDataSockReady = 1;
+                }
+                gDataSockReady = 1;
  8001548:	4b42      	ldr	r3, [pc, #264]	; (8001654 <ftpc_proc+0x8a4>)
  800154a:	2201      	movs	r2, #1
  800154c:	701a      	strb	r2, [r3, #0]
-   			}
-   			connect_state_data_ftpc = 0;
+            }
+            connect_state_data_ftpc = 0;
  800154e:	4b3d      	ldr	r3, [pc, #244]	; (8001644 <ftpc_proc+0x894>)
  8001550:	2200      	movs	r2, #0
  8001552:	701a      	strb	r2, [r3, #0]
-   			break;   
+            break;
  8001554:	e070      	b.n	8001638 <ftpc_proc+0x888>
-    	
-        case SOCK_CLOSE_WAIT :
+
+        case SOCK_CLOSE_WAIT:
 //	        printf("%d:CloseWait\r\n", DATA_SOCK);
-			if ((ret = disconnect(DATA_SOCK)) != SOCK_OK)
+            if ((ret = disconnect(DATA_SOCK)) != SOCK_OK)
  8001556:	2003      	movs	r0, #3
  8001558:	f001 fa4e 	bl	80029f8 <disconnect>
  800155c:	4603      	mov	r3, r0
@@ -2130,20 +2134,20 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  800156a:	e066      	b.n	800163a <ftpc_proc+0x88a>
 //			printf("%d:Closed\r\n", DATA_SOCK);
             break;
-            
-   		case SOCK_CLOSED :
+
+        case SOCK_CLOSED:
             if (ftpc.dsock_state == FTPC_DATASOCK_READY) {
  800156c:	4b37      	ldr	r3, [pc, #220]	; (800164c <ftpc_proc+0x89c>)
  800156e:	78db      	ldrb	r3, [r3, #3]
  8001570:	2b01      	cmp	r3, #1
  8001572:	d160      	bne.n	8001636 <ftpc_proc+0x886>
-   				if (ftpc.dsock_mode == FTPC_PASSIVE_MODE) {
+                if (ftpc.dsock_mode == FTPC_PASSIVE_MODE) {
  8001574:	4b35      	ldr	r3, [pc, #212]	; (800164c <ftpc_proc+0x89c>)
  8001576:	791b      	ldrb	r3, [r3, #4]
  8001578:	2b00      	cmp	r3, #0
  800157a:	d12b      	bne.n	80015d4 <ftpc_proc+0x824>
-//	   					printf("%d:FTPDataStart, port : %d\r\n", DATA_SOCK, ftpc_local_port);
-   					if ((ret = socket(DATA_SOCK, Sn_MR_TCP, ftpc_local_port, 0x0)) != DATA_SOCK) {
+//	   				printf("%d:FTPDataStart, port : %d\r\n", DATA_SOCK, ftpc_local_port);
+                    if ((ret = socket(DATA_SOCK, Sn_MR_TCP, ftpc_local_port, 0x0)) != DATA_SOCK) {
  800157c:	4b3a      	ldr	r3, [pc, #232]	; (8001668 <ftpc_proc+0x8b8>)
  800157e:	881a      	ldrh	r2, [r3, #0]
  8001580:	2300      	movs	r3, #0
@@ -2155,45 +2159,45 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  800158e:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  8001590:	2b03      	cmp	r3, #3
  8001592:	d00e      	beq.n	80015b2 <ftpc_proc+0x802>
-   						printf("%d:socket() error:%ld\r\n", DATA_SOCK, ret);
+                        printf("%d:socket() error:%ld\r\n", DATA_SOCK, ret);
  8001594:	6cfa      	ldr	r2, [r7, #76]	; 0x4c
  8001596:	2103      	movs	r1, #3
  8001598:	4834      	ldr	r0, [pc, #208]	; (800166c <ftpc_proc+0x8bc>)
  800159a:	f00c fc3b 	bl	800de14 <iprintf>
-   						close(DATA_SOCK);
+                        close(DATA_SOCK);
  800159e:	2003      	movs	r0, #3
  80015a0:	f001 f886 	bl	80026b0 <close>
                         printf("9. ret = %ld\r\n", ret);
  80015a4:	6cf9      	ldr	r1, [r7, #76]	; 0x4c
  80015a6:	4832      	ldr	r0, [pc, #200]	; (8001670 <ftpc_proc+0x8c0>)
  80015a8:	f00c fc34 	bl	800de14 <iprintf>
-   						return ret;
+                        return ret;
  80015ac:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  80015ae:	b2db      	uxtb	r3, r3
  80015b0:	e043      	b.n	800163a <ftpc_proc+0x88a>
-   					}
-   					ftpc_local_port++;
+                    }
+                    ftpc_local_port++;
  80015b2:	4b2d      	ldr	r3, [pc, #180]	; (8001668 <ftpc_proc+0x8b8>)
  80015b4:	881b      	ldrh	r3, [r3, #0]
  80015b6:	3301      	adds	r3, #1
  80015b8:	b29a      	uxth	r2, r3
  80015ba:	4b2b      	ldr	r3, [pc, #172]	; (8001668 <ftpc_proc+0x8b8>)
  80015bc:	801a      	strh	r2, [r3, #0]
-   					if (ftpc_local_port > 50000)
+                    if (ftpc_local_port > 50000)
  80015be:	4b2a      	ldr	r3, [pc, #168]	; (8001668 <ftpc_proc+0x8b8>)
  80015c0:	881b      	ldrh	r3, [r3, #0]
  80015c2:	f24c 3250 	movw	r2, #50000	; 0xc350
  80015c6:	4293      	cmp	r3, r2
  80015c8:	d92b      	bls.n	8001622 <ftpc_proc+0x872>
-   						ftpc_local_port = 35000;
+                        ftpc_local_port = 35000;
  80015ca:	4b27      	ldr	r3, [pc, #156]	; (8001668 <ftpc_proc+0x8b8>)
  80015cc:	f648 02b8 	movw	r2, #35000	; 0x88b8
  80015d0:	801a      	strh	r2, [r3, #0]
  80015d2:	e026      	b.n	8001622 <ftpc_proc+0x872>
-   				}
+                }
                 else {
-//	   					printf("%d:FTPDataStart, port : %d\r\n", DATA_SOCK, ftpc_local_port);
-   					if ((ret = socket(DATA_SOCK, Sn_MR_TCP, ftpc_local_port, 0x0)) != DATA_SOCK) {
+//	   				("%d:FTPDataStart, port : %d\r\n", DATA_SOCK, ftpc_local_port);
+                    if ((ret = socket(DATA_SOCK, Sn_MR_TCP, ftpc_local_port, 0x0)) != DATA_SOCK) {
  80015d4:	4b24      	ldr	r3, [pc, #144]	; (8001668 <ftpc_proc+0x8b8>)
  80015d6:	881a      	ldrh	r2, [r3, #0]
  80015d8:	2300      	movs	r3, #0
@@ -2205,45 +2209,45 @@ uint8_t ftpc_proc(uint8_t * dbuf, uint8_t *user, uint8_t *pw, uint8_t *destIp)
  80015e6:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  80015e8:	2b03      	cmp	r3, #3
  80015ea:	d00a      	beq.n	8001602 <ftpc_proc+0x852>
-   						printf("%d:socket() error:%ld\r\n", DATA_SOCK, ret);
+                        printf("%d:socket() error:%ld\r\n", DATA_SOCK, ret);
  80015ec:	6cfa      	ldr	r2, [r7, #76]	; 0x4c
  80015ee:	2103      	movs	r1, #3
  80015f0:	481e      	ldr	r0, [pc, #120]	; (800166c <ftpc_proc+0x8bc>)
  80015f2:	f00c fc0f 	bl	800de14 <iprintf>
-   						close(DATA_SOCK);
+                        close(DATA_SOCK);
  80015f6:	2003      	movs	r0, #3
  80015f8:	f001 f85a 	bl	80026b0 <close>
-   						return ret;
+                        return ret;
  80015fc:	6cfb      	ldr	r3, [r7, #76]	; 0x4c
  80015fe:	b2db      	uxtb	r3, r3
  8001600:	e01b      	b.n	800163a <ftpc_proc+0x88a>
-   					}
-   					ftpc_local_port++;
+                    }
+                    ftpc_local_port++;
  8001602:	4b19      	ldr	r3, [pc, #100]	; (8001668 <ftpc_proc+0x8b8>)
  8001604:	881b      	ldrh	r3, [r3, #0]
  8001606:	3301      	adds	r3, #1
  8001608:	b29a      	uxth	r2, r3
  800160a:	4b17      	ldr	r3, [pc, #92]	; (8001668 <ftpc_proc+0x8b8>)
  800160c:	801a      	strh	r2, [r3, #0]
-   					if (ftpc_local_port > 50000)
+                    if (ftpc_local_port > 50000)
  800160e:	4b16      	ldr	r3, [pc, #88]	; (8001668 <ftpc_proc+0x8b8>)
  8001610:	881b      	ldrh	r3, [r3, #0]
  8001612:	f24c 3250 	movw	r2, #50000	; 0xc350
  8001616:	4293      	cmp	r3, r2
  8001618:	d903      	bls.n	8001622 <ftpc_proc+0x872>
-   						ftpc_local_port = 35000;
+                        ftpc_local_port = 35000;
  800161a:	4b13      	ldr	r3, [pc, #76]	; (8001668 <ftpc_proc+0x8b8>)
  800161c:	f648 02b8 	movw	r2, #35000	; 0x88b8
  8001620:	801a      	strh	r2, [r3, #0]
-   				}
-   				ftpc.dsock_state = FTPC_DATASOCK_START;
+                }
+                ftpc.dsock_state = FTPC_DATASOCK_START;
  8001622:	4b0a      	ldr	r3, [pc, #40]	; (800164c <ftpc_proc+0x89c>)
  8001624:	2202      	movs	r2, #2
  8001626:	70da      	strb	r2, [r3, #3]
-   			}
+            }
             break;
  8001628:	e005      	b.n	8001636 <ftpc_proc+0x886>
-            
+
         default: break;
  800162a:	bf00      	nop
  800162c:	e004      	b.n	8001638 <ftpc_proc+0x888>
@@ -2309,7 +2313,7 @@ void ftpc_setFileName(uint8_t *sorce, uint8_t *dest)
  8001692:	6879      	ldr	r1, [r7, #4]
  8001694:	4805      	ldr	r0, [pc, #20]	; (80016ac <ftpc_setFileName+0x24>)
  8001696:	f00c fc83 	bl	800dfa0 <strcpy>
-    strcpy((char *)destFile, (char *)dest);    
+    strcpy((char *)destFile, (char *)dest);
  800169a:	6839      	ldr	r1, [r7, #0]
  800169c:	4804      	ldr	r0, [pc, #16]	; (80016b0 <ftpc_setFileName+0x28>)
  800169e:	f00c fc7f 	bl	800dfa0 <strcpy>
@@ -2372,7 +2376,7 @@ void ftpc_service(COMMAND cmd)
  80016f2:	4618      	mov	r0, r3
  80016f4:	f00b fd18 	bl	800d128 <memset>
 
-	gFtpServiceStart = 0;
+    gFtpServiceStart = 0;
  80016f8:	4b87      	ldr	r3, [pc, #540]	; (8001918 <ftpc_service+0x23c>)
  80016fa:	2200      	movs	r2, #0
  80016fc:	701a      	strb	r2, [r3, #0]
@@ -2387,8 +2391,8 @@ void ftpc_service(COMMAND cmd)
  8001710:	2b01      	cmp	r3, #1
  8001712:	d055      	beq.n	80017c0 <ftpc_service+0xe4>
 
-    			gModeActivePassiveflag = 1;
-    		}
+                gModeActivePassiveflag = 1;
+            }
             break;
 
         default: break;
@@ -2419,7 +2423,7 @@ void ftpc_service(COMMAND cmd)
  8001748:	701a      	strb	r2, [r3, #0]
             break;
  800174a:	e0e0      	b.n	800190e <ftpc_service+0x232>
-                ctlnetwork(CN_GET_NETINFO, (void*)&gWIZNETINFO);
+                ctlnetwork(CN_GET_NETINFO, (void *)&gWIZNETINFO);
  800174c:	f107 033c 	add.w	r3, r7, #60	; 0x3c
  8001750:	4619      	mov	r1, r3
  8001752:	2001      	movs	r0, #1
@@ -2431,11 +2435,11 @@ void ftpc_service(COMMAND cmd)
  8001762:	461e      	mov	r6, r3
  8001764:	f897 3044 	ldrb.w	r3, [r7, #68]	; 0x44
  8001768:	461a      	mov	r2, r3
-                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port>>8), (uint8_t)(ftpc_local_port & 0x00ff));               
+                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port >> 8), (uint8_t)(ftpc_local_port & 0x00ff));
  800176a:	f897 3045 	ldrb.w	r3, [r7, #69]	; 0x45
                 sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
  800176e:	4619      	mov	r1, r3
-                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port>>8), (uint8_t)(ftpc_local_port & 0x00ff));               
+                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port >> 8), (uint8_t)(ftpc_local_port & 0x00ff));
  8001770:	4b6d      	ldr	r3, [pc, #436]	; (8001928 <ftpc_service+0x24c>)
  8001772:	881b      	ldrh	r3, [r3, #0]
  8001774:	0a1b      	lsrs	r3, r3, #8
@@ -2443,7 +2447,7 @@ void ftpc_service(COMMAND cmd)
  8001778:	b2db      	uxtb	r3, r3
                 sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
  800177a:	461c      	mov	r4, r3
-                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port>>8), (uint8_t)(ftpc_local_port & 0x00ff));               
+                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port >> 8), (uint8_t)(ftpc_local_port & 0x00ff));
  800177c:	4b6a      	ldr	r3, [pc, #424]	; (8001928 <ftpc_service+0x24c>)
  800177e:	881b      	ldrh	r3, [r3, #0]
  8001780:	b2db      	uxtb	r3, r3
@@ -2482,12 +2486,12 @@ void ftpc_service(COMMAND cmd)
  80017c2:	791b      	ldrb	r3, [r3, #4]
  80017c4:	2b00      	cmp	r3, #0
  80017c6:	d116      	bne.n	80017f6 <ftpc_service+0x11a>
-            	sprintf((char *)dat, "PASV\r\n");
+                sprintf((char *)dat, "PASV\r\n");
  80017c8:	f107 0354 	add.w	r3, r7, #84	; 0x54
  80017cc:	4954      	ldr	r1, [pc, #336]	; (8001920 <ftpc_service+0x244>)
  80017ce:	4618      	mov	r0, r3
  80017d0:	f00c fbc6 	bl	800df60 <siprintf>
-            	send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+                send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
  80017d4:	f107 0354 	add.w	r3, r7, #84	; 0x54
  80017d8:	4618      	mov	r0, r3
  80017da:	f7fe fd25 	bl	8000228 <strlen>
@@ -2497,41 +2501,41 @@ void ftpc_service(COMMAND cmd)
  80017e6:	4619      	mov	r1, r3
  80017e8:	2002      	movs	r0, #2
  80017ea:	f001 f97b 	bl	8002ae4 <send>
-            	Command.First = f_get;
+                Command.First = f_get;
  80017ee:	4b4d      	ldr	r3, [pc, #308]	; (8001924 <ftpc_service+0x248>)
  80017f0:	2203      	movs	r2, #3
  80017f2:	701a      	strb	r2, [r3, #0]
             break;
  80017f4:	e08b      	b.n	800190e <ftpc_service+0x232>
-            	ctlnetwork(CN_GET_NETINFO, (void*) &gWIZNETINFO);
+                ctlnetwork(CN_GET_NETINFO, (void *)&gWIZNETINFO);
  80017f6:	f107 0324 	add.w	r3, r7, #36	; 0x24
  80017fa:	4619      	mov	r1, r3
  80017fc:	2001      	movs	r0, #1
  80017fe:	f001 fc93 	bl	8003128 <ctlnetwork>
-            	sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
+                sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
  8001802:	f897 302a 	ldrb.w	r3, [r7, #42]	; 0x2a
  8001806:	461d      	mov	r5, r3
  8001808:	f897 302b 	ldrb.w	r3, [r7, #43]	; 0x2b
  800180c:	461e      	mov	r6, r3
  800180e:	f897 302c 	ldrb.w	r3, [r7, #44]	; 0x2c
  8001812:	461a      	mov	r2, r3
-                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port>>8), (uint8_t)(ftpc_local_port & 0x00ff));
+                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port >> 8), (uint8_t)(ftpc_local_port & 0x00ff));
  8001814:	f897 302d 	ldrb.w	r3, [r7, #45]	; 0x2d
-            	sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
+                sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
  8001818:	4619      	mov	r1, r3
-                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port>>8), (uint8_t)(ftpc_local_port & 0x00ff));
+                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port >> 8), (uint8_t)(ftpc_local_port & 0x00ff));
  800181a:	4b43      	ldr	r3, [pc, #268]	; (8001928 <ftpc_service+0x24c>)
  800181c:	881b      	ldrh	r3, [r3, #0]
  800181e:	0a1b      	lsrs	r3, r3, #8
  8001820:	b29b      	uxth	r3, r3
  8001822:	b2db      	uxtb	r3, r3
-            	sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
+                sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
  8001824:	461c      	mov	r4, r3
-                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port>>8), (uint8_t)(ftpc_local_port & 0x00ff));
+                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port >> 8), (uint8_t)(ftpc_local_port & 0x00ff));
  8001826:	4b40      	ldr	r3, [pc, #256]	; (8001928 <ftpc_service+0x24c>)
  8001828:	881b      	ldrh	r3, [r3, #0]
  800182a:	b2db      	uxtb	r3, r3
-            	sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
+                sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
  800182c:	f107 0054 	add.w	r0, r7, #84	; 0x54
  8001830:	9303      	str	r3, [sp, #12]
  8001832:	9402      	str	r4, [sp, #8]
@@ -2541,7 +2545,7 @@ void ftpc_service(COMMAND cmd)
  800183a:	462a      	mov	r2, r5
  800183c:	493b      	ldr	r1, [pc, #236]	; (800192c <ftpc_service+0x250>)
  800183e:	f00c fb8f 	bl	800df60 <siprintf>
-            	send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+                send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
  8001842:	f107 0354 	add.w	r3, r7, #84	; 0x54
  8001846:	4618      	mov	r0, r3
  8001848:	f7fe fcee 	bl	8000228 <strlen>
@@ -2551,11 +2555,11 @@ void ftpc_service(COMMAND cmd)
  8001854:	4619      	mov	r1, r3
  8001856:	2002      	movs	r0, #2
  8001858:	f001 f944 	bl	8002ae4 <send>
-            	Command.First = f_get;
+                Command.First = f_get;
  800185c:	4b31      	ldr	r3, [pc, #196]	; (8001924 <ftpc_service+0x248>)
  800185e:	2203      	movs	r2, #3
  8001860:	701a      	strb	r2, [r3, #0]
-            	gModeActivePassiveflag = 1;
+                gModeActivePassiveflag = 1;
  8001862:	4b33      	ldr	r3, [pc, #204]	; (8001930 <ftpc_service+0x254>)
  8001864:	2201      	movs	r2, #1
  8001866:	701a      	strb	r2, [r3, #0]
@@ -2566,12 +2570,12 @@ void ftpc_service(COMMAND cmd)
  800186c:	791b      	ldrb	r3, [r3, #4]
  800186e:	2b00      	cmp	r3, #0
  8001870:	d116      	bne.n	80018a0 <ftpc_service+0x1c4>
-    			sprintf((char *)dat, "PASV\r\n");
+                sprintf((char *)dat, "PASV\r\n");
  8001872:	f107 0354 	add.w	r3, r7, #84	; 0x54
  8001876:	492a      	ldr	r1, [pc, #168]	; (8001920 <ftpc_service+0x244>)
  8001878:	4618      	mov	r0, r3
  800187a:	f00c fb71 	bl	800df60 <siprintf>
-    			send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+                send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
  800187e:	f107 0354 	add.w	r3, r7, #84	; 0x54
  8001882:	4618      	mov	r0, r3
  8001884:	f7fe fcd0 	bl	8000228 <strlen>
@@ -2581,41 +2585,41 @@ void ftpc_service(COMMAND cmd)
  8001890:	4619      	mov	r1, r3
  8001892:	2002      	movs	r0, #2
  8001894:	f001 f926 	bl	8002ae4 <send>
-    			Command.First = f_put;
+                Command.First = f_put;
  8001898:	4b22      	ldr	r3, [pc, #136]	; (8001924 <ftpc_service+0x248>)
  800189a:	2202      	movs	r2, #2
  800189c:	701a      	strb	r2, [r3, #0]
             break;
  800189e:	e036      	b.n	800190e <ftpc_service+0x232>
-    			ctlnetwork(CN_GET_NETINFO, (void*) &gWIZNETINFO);
+                ctlnetwork(CN_GET_NETINFO, (void *)&gWIZNETINFO);
  80018a0:	f107 030c 	add.w	r3, r7, #12
  80018a4:	4619      	mov	r1, r3
  80018a6:	2001      	movs	r0, #1
  80018a8:	f001 fc3e 	bl	8003128 <ctlnetwork>
-    			sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2], 
+                sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
  80018ac:	7cbb      	ldrb	r3, [r7, #18]
  80018ae:	461d      	mov	r5, r3
  80018b0:	7cfb      	ldrb	r3, [r7, #19]
  80018b2:	461e      	mov	r6, r3
  80018b4:	7d3b      	ldrb	r3, [r7, #20]
  80018b6:	461a      	mov	r2, r3
-                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port>>8), (uint8_t)(ftpc_local_port&0x00ff));
+                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port >> 8), (uint8_t)(ftpc_local_port & 0x00ff));
  80018b8:	7d7b      	ldrb	r3, [r7, #21]
-    			sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2], 
+                sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
  80018ba:	4619      	mov	r1, r3
-                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port>>8), (uint8_t)(ftpc_local_port&0x00ff));
+                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port >> 8), (uint8_t)(ftpc_local_port & 0x00ff));
  80018bc:	4b1a      	ldr	r3, [pc, #104]	; (8001928 <ftpc_service+0x24c>)
  80018be:	881b      	ldrh	r3, [r3, #0]
  80018c0:	0a1b      	lsrs	r3, r3, #8
  80018c2:	b29b      	uxth	r3, r3
  80018c4:	b2db      	uxtb	r3, r3
-    			sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2], 
+                sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
  80018c6:	461c      	mov	r4, r3
-                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port>>8), (uint8_t)(ftpc_local_port&0x00ff));
+                        gWIZNETINFO.ip[3], (uint8_t)(ftpc_local_port >> 8), (uint8_t)(ftpc_local_port & 0x00ff));
  80018c8:	4b17      	ldr	r3, [pc, #92]	; (8001928 <ftpc_service+0x24c>)
  80018ca:	881b      	ldrh	r3, [r3, #0]
  80018cc:	b2db      	uxtb	r3, r3
-    			sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2], 
+                sprintf((char *)dat, "PORT %d,%d,%d,%d,%d,%d\r\n", gWIZNETINFO.ip[0], gWIZNETINFO.ip[1], gWIZNETINFO.ip[2],
  80018ce:	f107 0054 	add.w	r0, r7, #84	; 0x54
  80018d2:	9303      	str	r3, [sp, #12]
  80018d4:	9402      	str	r4, [sp, #8]
@@ -2625,7 +2629,7 @@ void ftpc_service(COMMAND cmd)
  80018dc:	462a      	mov	r2, r5
  80018de:	4913      	ldr	r1, [pc, #76]	; (800192c <ftpc_service+0x250>)
  80018e0:	f00c fb3e 	bl	800df60 <siprintf>
-    			send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+                send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
  80018e4:	f107 0354 	add.w	r3, r7, #84	; 0x54
  80018e8:	4618      	mov	r0, r3
  80018ea:	f7fe fc9d 	bl	8000228 <strlen>
@@ -2635,11 +2639,11 @@ void ftpc_service(COMMAND cmd)
  80018f6:	4619      	mov	r1, r3
  80018f8:	2002      	movs	r0, #2
  80018fa:	f001 f8f3 	bl	8002ae4 <send>
-    			Command.First = f_put;
+                Command.First = f_put;
  80018fe:	4b09      	ldr	r3, [pc, #36]	; (8001924 <ftpc_service+0x248>)
  8001900:	2202      	movs	r2, #2
  8001902:	701a      	strb	r2, [r3, #0]
-    			gModeActivePassiveflag = 1;
+                gModeActivePassiveflag = 1;
  8001904:	4b0a      	ldr	r3, [pc, #40]	; (8001930 <ftpc_service+0x254>)
  8001906:	2201      	movs	r2, #1
  8001908:	701a      	strb	r2, [r3, #0]
@@ -2664,7 +2668,7 @@ void ftpc_service(COMMAND cmd)
 
 08001934 <ftpc_parser>:
 
-static char ftpc_parser(uint8_t * buf, uint8_t *user, uint8_t *pw)
+static char ftpc_parser(uint8_t *buf, uint8_t *user, uint8_t *pw)
 {
  8001934:	b580      	push	{r7, lr}
  8001936:	b08c      	sub	sp, #48	; 0x30
@@ -2673,7 +2677,7 @@ static char ftpc_parser(uint8_t * buf, uint8_t *user, uint8_t *pw)
  800193c:	60b9      	str	r1, [r7, #8]
  800193e:	607a      	str	r2, [r7, #4]
     uint16_t Responses;
-	uint8_t dat[30]={0,};
+    uint8_t dat[30] = {0,};
  8001940:	2300      	movs	r3, #0
  8001942:	613b      	str	r3, [r7, #16]
  8001944:	f107 0314 	add.w	r3, r7, #20
@@ -2686,7 +2690,7 @@ static char ftpc_parser(uint8_t * buf, uint8_t *user, uint8_t *pw)
  8001954:	615a      	str	r2, [r3, #20]
  8001956:	831a      	strh	r2, [r3, #24]
 
-	Responses = (buf[0]-'0')*100+(buf[1]-'0')*10+(buf[2]-'0');
+    Responses = (buf[0] - '0') * 100 + (buf[1] - '0') * 10 + (buf[2] - '0');
  8001958:	68fb      	ldr	r3, [r7, #12]
  800195a:	781b      	ldrb	r3, [r3, #0]
  800195c:	3b30      	subs	r3, #48	; 0x30
@@ -2722,7 +2726,7 @@ static char ftpc_parser(uint8_t * buf, uint8_t *user, uint8_t *pw)
  8001998:	3b30      	subs	r3, #48	; 0x30
  800199a:	85fb      	strh	r3, [r7, #46]	; 0x2e
 
-	switch (Responses) {
+    switch (Responses) {
  800199c:	8dfb      	ldrh	r3, [r7, #46]	; 0x2e
  800199e:	f240 124b 	movw	r2, #331	; 0x14b
  80019a2:	4293      	cmp	r3, r2
@@ -2773,16 +2777,16 @@ static char ftpc_parser(uint8_t * buf, uint8_t *user, uint8_t *pw)
  8001a44:	08001b5f 	.word	0x08001b5f
  8001a48:	08001b5f 	.word	0x08001b5f
  8001a4c:	08001aa5 	.word	0x08001aa5
-		/* Service ready for new user. */
-		case R_220:	    
-			sprintf((char *)dat, "USER %s\r\n", user);
+        /* Service ready for new user. */
+        case R_220:
+            sprintf((char *)dat, "USER %s\r\n", user);
  8001a50:	f107 0310 	add.w	r3, r7, #16
  8001a54:	68ba      	ldr	r2, [r7, #8]
  8001a56:	4945      	ldr	r1, [pc, #276]	; (8001b6c <ftpc_parser+0x238>)
  8001a58:	4618      	mov	r0, r3
  8001a5a:	f00c fa81 	bl	800df60 <siprintf>
-//	            printf("Send Command : %s", dat);            
-			send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+            //	            printf("Send Command : %s", dat);
+            send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
  8001a5e:	f107 0310 	add.w	r3, r7, #16
  8001a62:	4618      	mov	r0, r3
  8001a64:	f7fe fbe0 	bl	8000228 <strlen>
@@ -2792,18 +2796,18 @@ static char ftpc_parser(uint8_t * buf, uint8_t *user, uint8_t *pw)
  8001a70:	4619      	mov	r1, r3
  8001a72:	2002      	movs	r0, #2
  8001a74:	f001 f836 	bl	8002ae4 <send>
-			break;
+            break;
  8001a78:	e072      	b.n	8001b60 <ftpc_parser+0x22c>
 
-        case R_331:	    /* User name okay, need password. */
-			sprintf((char *)dat, "PASS %s\r\n", pw);
+        case R_331: /* User name okay, need password. */
+            sprintf((char *)dat, "PASS %s\r\n", pw);
  8001a7a:	f107 0310 	add.w	r3, r7, #16
  8001a7e:	687a      	ldr	r2, [r7, #4]
  8001a80:	493b      	ldr	r1, [pc, #236]	; (8001b70 <ftpc_parser+0x23c>)
  8001a82:	4618      	mov	r0, r3
  8001a84:	f00c fa6c 	bl	800df60 <siprintf>
-//	            printf("Send Command : %s", dat);
-			send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+            //	            printf("Send Command : %s", dat);
+            send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
  8001a88:	f107 0310 	add.w	r3, r7, #16
  8001a8c:	4618      	mov	r0, r3
  8001a8e:	f7fe fbcb 	bl	8000228 <strlen>
@@ -2813,22 +2817,22 @@ static char ftpc_parser(uint8_t * buf, uint8_t *user, uint8_t *pw)
  8001a9a:	4619      	mov	r1, r3
  8001a9c:	2002      	movs	r0, #2
  8001a9e:	f001 f821 	bl	8002ae4 <send>
-			break;
+            break;
  8001aa2:	e05d      	b.n	8001b60 <ftpc_parser+0x22c>
 
-        case R_230:	    /* User logged in, proceed */
-			sprintf((char *)dat, "TYPE %c\r\n", TransferAscii);
+        case R_230: /* User logged in, proceed */
+            sprintf((char *)dat, "TYPE %c\r\n", TransferAscii);
  8001aa4:	f107 0310 	add.w	r3, r7, #16
  8001aa8:	2241      	movs	r2, #65	; 0x41
  8001aaa:	4932      	ldr	r1, [pc, #200]	; (8001b74 <ftpc_parser+0x240>)
  8001aac:	4618      	mov	r0, r3
  8001aae:	f00c fa57 	bl	800df60 <siprintf>
-			ftpc.type = FTPC_ASCII_TYPE;
+            ftpc.type = FTPC_ASCII_TYPE;
  8001ab2:	4b31      	ldr	r3, [pc, #196]	; (8001b78 <ftpc_parser+0x244>)
  8001ab4:	2200      	movs	r2, #0
  8001ab6:	709a      	strb	r2, [r3, #2]
-//	            printf("Send Command : %s", dat);
-			send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
+            //	            printf("Send Command : %s", dat);
+            send(CTRL_SOCK, (uint8_t *)dat, strlen((char *)dat));
  8001ab8:	f107 0310 	add.w	r3, r7, #16
  8001abc:	4618      	mov	r0, r3
  8001abe:	f7fe fbb3 	bl	8000228 <strlen>
@@ -2838,11 +2842,11 @@ static char ftpc_parser(uint8_t * buf, uint8_t *user, uint8_t *pw)
  8001aca:	4619      	mov	r1, r3
  8001acc:	2002      	movs	r0, #2
  8001ace:	f001 f809 	bl	8002ae4 <send>
-			break;
+            break;
  8001ad2:	e045      	b.n	8001b60 <ftpc_parser+0x22c>
 
-        case R_200:			
-			if ((ftpc.dsock_mode == FTPC_ACTIVE_MODE) && gModeActivePassiveflag) {
+        case R_200:
+            if ((ftpc.dsock_mode == FTPC_ACTIVE_MODE) && gModeActivePassiveflag) {
  8001ad4:	4b28      	ldr	r3, [pc, #160]	; (8001b78 <ftpc_parser+0x244>)
  8001ad6:	791b      	ldrb	r3, [r3, #4]
  8001ad8:	2b01      	cmp	r3, #1
@@ -2851,29 +2855,29 @@ static char ftpc_parser(uint8_t * buf, uint8_t *user, uint8_t *pw)
  8001ade:	781b      	ldrb	r3, [r3, #0]
  8001ae0:	2b00      	cmp	r3, #0
  8001ae2:	d006      	beq.n	8001af2 <ftpc_parser+0x1be>
-				ftpc.dsock_state = FTPC_DATASOCK_READY;
+                ftpc.dsock_state = FTPC_DATASOCK_READY;
  8001ae4:	4b24      	ldr	r3, [pc, #144]	; (8001b78 <ftpc_parser+0x244>)
  8001ae6:	2201      	movs	r2, #1
  8001ae8:	70da      	strb	r2, [r3, #3]
-				gModeActivePassiveflag = 0;
+                gModeActivePassiveflag = 0;
  8001aea:	4b24      	ldr	r3, [pc, #144]	; (8001b7c <ftpc_parser+0x248>)
  8001aec:	2200      	movs	r2, #0
  8001aee:	701a      	strb	r2, [r3, #0]
-			}
-			else {        				
-				gFtpServiceStart = 1;
             }
-			break;
+            else {
+                gFtpServiceStart = 1;
+            }
+            break;
  8001af0:	e036      	b.n	8001b60 <ftpc_parser+0x22c>
-				gFtpServiceStart = 1;
+                gFtpServiceStart = 1;
  8001af2:	4b23      	ldr	r3, [pc, #140]	; (8001b80 <ftpc_parser+0x24c>)
  8001af4:	2201      	movs	r2, #1
  8001af6:	701a      	strb	r2, [r3, #0]
-			break;
+            break;
  8001af8:	e032      	b.n	8001b60 <ftpc_parser+0x22c>
 
-        case R_150:							
-			switch (Command.First) {
+        case R_150:
+            switch (Command.First) {
  8001afa:	4b22      	ldr	r3, [pc, #136]	; (8001b84 <ftpc_parser+0x250>)
  8001afc:	781b      	ldrb	r3, [r3, #0]
  8001afe:	2b03      	cmp	r3, #3
@@ -2885,71 +2889,71 @@ static char ftpc_parser(uint8_t * buf, uint8_t *user, uint8_t *pw)
  8001b0a:	2b02      	cmp	r3, #2
  8001b0c:	d014      	beq.n	8001b38 <ftpc_parser+0x204>
  8001b0e:	e01d      	b.n	8001b4c <ftpc_parser+0x218>
-    			case f_dir:
-    				Command.First = f_nocmd;
+                case f_dir:
+                    Command.First = f_nocmd;
  8001b10:	4b1c      	ldr	r3, [pc, #112]	; (8001b84 <ftpc_parser+0x250>)
  8001b12:	2200      	movs	r2, #0
  8001b14:	701a      	strb	r2, [r3, #0]
-    				Command.Second = s_dir;
+                    Command.Second = s_dir;
  8001b16:	4b1b      	ldr	r3, [pc, #108]	; (8001b84 <ftpc_parser+0x250>)
  8001b18:	2201      	movs	r2, #1
  8001b1a:	705a      	strb	r2, [r3, #1]
-    				gDataPutGetStart = 1;
+                    gDataPutGetStart = 1;
  8001b1c:	4b1a      	ldr	r3, [pc, #104]	; (8001b88 <ftpc_parser+0x254>)
  8001b1e:	2201      	movs	r2, #1
  8001b20:	701a      	strb	r2, [r3, #0]
-    				break;
+                    break;
  8001b22:	e017      	b.n	8001b54 <ftpc_parser+0x220>
-                
-    			case f_get:
-    				Command.First = f_nocmd;
+
+                case f_get:
+                    Command.First = f_nocmd;
  8001b24:	4b17      	ldr	r3, [pc, #92]	; (8001b84 <ftpc_parser+0x250>)
  8001b26:	2200      	movs	r2, #0
  8001b28:	701a      	strb	r2, [r3, #0]
-    				Command.Second = s_get;
+                    Command.Second = s_get;
  8001b2a:	4b16      	ldr	r3, [pc, #88]	; (8001b84 <ftpc_parser+0x250>)
  8001b2c:	2203      	movs	r2, #3
  8001b2e:	705a      	strb	r2, [r3, #1]
-    				gDataPutGetStart = 1;
+                    gDataPutGetStart = 1;
  8001b30:	4b15      	ldr	r3, [pc, #84]	; (8001b88 <ftpc_parser+0x254>)
  8001b32:	2201      	movs	r2, #1
  8001b34:	701a      	strb	r2, [r3, #0]
-    				break;
+                    break;
  8001b36:	e00d      	b.n	8001b54 <ftpc_parser+0x220>
-                    
-    			case f_put:
-    				Command.First = f_nocmd;
+
+                case f_put:
+                    Command.First = f_nocmd;
  8001b38:	4b12      	ldr	r3, [pc, #72]	; (8001b84 <ftpc_parser+0x250>)
  8001b3a:	2200      	movs	r2, #0
  8001b3c:	701a      	strb	r2, [r3, #0]
-    				Command.Second = s_put;
+                    Command.Second = s_put;
  8001b3e:	4b11      	ldr	r3, [pc, #68]	; (8001b84 <ftpc_parser+0x250>)
  8001b40:	2202      	movs	r2, #2
  8001b42:	705a      	strb	r2, [r3, #1]
-    				gDataPutGetStart = 1;
+                    gDataPutGetStart = 1;
  8001b44:	4b10      	ldr	r3, [pc, #64]	; (8001b88 <ftpc_parser+0x254>)
  8001b46:	2201      	movs	r2, #1
  8001b48:	701a      	strb	r2, [r3, #0]
-    				break;
+                    break;
  8001b4a:	e003      	b.n	8001b54 <ftpc_parser+0x220>
-                
-    			default :
-    				printf("Command.First = default\r\n");
+
+                default:
+                    printf("Command.First = default\r\n");
  8001b4c:	480f      	ldr	r0, [pc, #60]	; (8001b8c <ftpc_parser+0x258>)
  8001b4e:	f00c f9fb 	bl	800df48 <puts>
-    				break;
+                    break;
  8001b52:	bf00      	nop
-			}
-			break;
+            }
+            break;
  8001b54:	e004      	b.n	8001b60 <ftpc_parser+0x22c>
-            
-		/* Closing data connection. File transfer/abort successful */
-		case R_226:			
-			gFtpServiceStart = 1;			
+
+        /* Closing data connection. File transfer/abort successful */
+        case R_226:
+            gFtpServiceStart = 1;
  8001b56:	4b0a      	ldr	r3, [pc, #40]	; (8001b80 <ftpc_parser+0x24c>)
  8001b58:	2201      	movs	r2, #1
  8001b5a:	701a      	strb	r2, [r3, #0]
-			break;
+            break;
  8001b5c:	e000      	b.n	8001b60 <ftpc_parser+0x22c>
 
         default: break;
@@ -8466,7 +8470,7 @@ void JumpToApplication(void)
  8003e3c:	b580      	push	{r7, lr}
  8003e3e:	b082      	sub	sp, #8
  8003e40:	af00      	add	r7, sp, #0
-    /* Test if user code is programmed starting from address */ 
+    /* Test if user code is programmed starting from address */
     if (((*(__IO uint32_t *)APPLICATION_ADDR) & 0x2FFE0000) == 0x20000000) {
  8003e42:	4b10      	ldr	r3, [pc, #64]	; (8003e84 <JumpToApplication+0x48>)
  8003e44:	681a      	ldr	r2, [r3, #0]
@@ -8529,7 +8533,7 @@ void FtpDownloadApplication(void)
  8003e9e:	b082      	sub	sp, #8
  8003ea0:	af00      	add	r7, sp, #0
     uint8_t state;
-    uint8_t hostIpAddr[4] = {192, 168, 0, 75};
+    uint8_t hostIpAddr[4] = {HOST_IP_ADDR1, HOST_IP_ADDR2, HOST_IP_ADDR3, HOST_IP_ADDR4};
  8003ea2:	4b21      	ldr	r3, [pc, #132]	; (8003f28 <FtpDownloadApplication+0x8c>)
  8003ea4:	603b      	str	r3, [r7, #0]
 
@@ -8541,16 +8545,16 @@ void FtpDownloadApplication(void)
  8003eae:	f7fc ff7f 	bl	8000db0 <ftpc_proc>
  8003eb2:	4603      	mov	r3, r0
  8003eb4:	71fb      	strb	r3, [r7, #7]
-	if (state == SOCK_OK) {
+    if (state == SOCK_OK) {
  8003eb6:	79fb      	ldrb	r3, [r7, #7]
  8003eb8:	2b01      	cmp	r3, #1
  8003eba:	d12e      	bne.n	8003f1a <FtpDownloadApplication+0x7e>
-		if (ftpc_status()) {		
+        if (ftpc_status()) {
  8003ebc:	f7fd fbda 	bl	8001674 <ftpc_status>
  8003ec0:	4603      	mov	r3, r0
  8003ec2:	2b00      	cmp	r3, #0
  8003ec4:	d029      	beq.n	8003f1a <FtpDownloadApplication+0x7e>
-			switch (gStep) {
+            switch (gStep) {
  8003ec6:	4b1c      	ldr	r3, [pc, #112]	; (8003f38 <FtpDownloadApplication+0x9c>)
  8003ec8:	781b      	ldrb	r3, [r3, #0]
  8003eca:	2b03      	cmp	r3, #3
@@ -8561,56 +8565,57 @@ void FtpDownloadApplication(void)
  8003ed8:	08003ef3 	.word	0x08003ef3
  8003edc:	08003f09 	.word	0x08003f09
  8003ee0:	08003f15 	.word	0x08003f15
-				case 0:				
-					ftpc_service(CMD_DIR);
+                case 0:
+                    ftpc_service(CMD_DIR);
  8003ee4:	2000      	movs	r0, #0
  8003ee6:	f7fd fbf9 	bl	80016dc <ftpc_service>
-					gStep = 1;
+                    gStep = 1;
  8003eea:	4b13      	ldr	r3, [pc, #76]	; (8003f38 <FtpDownloadApplication+0x9c>)
  8003eec:	2201      	movs	r2, #1
  8003eee:	701a      	strb	r2, [r3, #0]
-					break;
+                    break;
  8003ef0:	e016      	b.n	8003f20 <FtpDownloadApplication+0x84>
 
-				case 1:
-					ftpc_setFileName((uint8_t *)APPLICATION_FILE_NAME, (uint8_t *)APPLICATION_FILE_NAME);
+                case 1:
+                    ftpc_setFileName((uint8_t *)APPLICATION_FILE_NAME, (uint8_t *)APPLICATION_FILE_NAME);
  8003ef2:	4912      	ldr	r1, [pc, #72]	; (8003f3c <FtpDownloadApplication+0xa0>)
  8003ef4:	4811      	ldr	r0, [pc, #68]	; (8003f3c <FtpDownloadApplication+0xa0>)
  8003ef6:	f7fd fbc7 	bl	8001688 <ftpc_setFileName>
-					ftpc_service(CMD_GET);
+                    ftpc_service(CMD_GET);
  8003efa:	2001      	movs	r0, #1
  8003efc:	f7fd fbee 	bl	80016dc <ftpc_service>
-					gStep = 2;
+                    gStep = 2;
  8003f00:	4b0d      	ldr	r3, [pc, #52]	; (8003f38 <FtpDownloadApplication+0x9c>)
  8003f02:	2202      	movs	r2, #2
  8003f04:	701a      	strb	r2, [r3, #0]
-					break;
+                    break;
  8003f06:	e00b      	b.n	8003f20 <FtpDownloadApplication+0x84>
 
-				case 2:
-					BinaryFlashWrite();
+                case 2:
+                    BinaryFlashWrite();
  8003f08:	f000 f81a 	bl	8003f40 <BinaryFlashWrite>
-					gStep = 3;
+                    gStep = 3;
  8003f0c:	4b0a      	ldr	r3, [pc, #40]	; (8003f38 <FtpDownloadApplication+0x9c>)
  8003f0e:	2203      	movs	r2, #3
  8003f10:	701a      	strb	r2, [r3, #0]
-					break;
+                    break;
  8003f12:	e005      	b.n	8003f20 <FtpDownloadApplication+0x84>
 
-				case 3:
-					JumpToApplication();
+                case 3:
+                    JumpToApplication();
  8003f14:	f7ff ff92 	bl	8003e3c <JumpToApplication>
-					break;
+                    break;
  8003f18:	e002      	b.n	8003f20 <FtpDownloadApplication+0x84>
 
-				default: break;
-			}
-		}
+                default:
+                    break;
+            }
+        }
  8003f1a:	bf00      	nop
  8003f1c:	e000      	b.n	8003f20 <FtpDownloadApplication+0x84>
-				default: break;
+                    break;
  8003f1e:	bf00      	nop
-	}
+    }
 }
  8003f20:	bf00      	nop
  8003f22:	3708      	adds	r7, #8
@@ -8639,7 +8644,7 @@ static void BinaryFlashWrite(void)
  8003f56:	605a      	str	r2, [r3, #4]
  8003f58:	609a      	str	r2, [r3, #8]
  8003f5a:	60da      	str	r2, [r3, #12]
-	uint8_t readBuf[1024] = {0,};
+    uint8_t readBuf[1024] = {0,};
  8003f5c:	f507 6386 	add.w	r3, r7, #1072	; 0x430
  8003f60:	f5a3 6385 	sub.w	r3, r3, #1064	; 0x428
  8003f64:	2200      	movs	r2, #0
@@ -8652,14 +8657,14 @@ static void BinaryFlashWrite(void)
     uint32_t fileSize = 0;
  8003f76:	2300      	movs	r3, #0
  8003f78:	f8c7 3424 	str.w	r3, [r7, #1060]	; 0x424
-	uint32_t bw, totalBw = 0, ramsource;
+    uint32_t bw, totalBw = 0, ramsource;
  8003f7c:	2300      	movs	r3, #0
  8003f7e:	f8c7 342c 	str.w	r3, [r7, #1068]	; 0x42c
-	uint32_t flashdestination = APPLICATION_ADDR;
+    uint32_t flashdestination = APPLICATION_ADDR;
  8003f82:	4b39      	ldr	r3, [pc, #228]	; (8004068 <BinaryFlashWrite+0x128>)
  8003f84:	f8c7 3428 	str.w	r3, [r7, #1064]	; 0x428
     FRESULT fres;
-    
+
     FLASH_If_Init();
  8003f88:	f000 f876 	bl	8004078 <FLASH_If_Init>
     FLASH_If_Erase(APPLICATION_ADDR);
@@ -8684,12 +8689,12 @@ static void BinaryFlashWrite(void)
  8003fb4:	f897 3423 	ldrb.w	r3, [r7, #1059]	; 0x423
  8003fb8:	2b00      	cmp	r3, #0
  8003fba:	d14f      	bne.n	800405c <BinaryFlashWrite+0x11c>
-        fileSize = f_size(&gFile);        
+        fileSize = f_size(&gFile);
  8003fbc:	4b2d      	ldr	r3, [pc, #180]	; (8004074 <BinaryFlashWrite+0x134>)
  8003fbe:	f8d3 380c 	ldr.w	r3, [r3, #2060]	; 0x80c
  8003fc2:	f8c7 3424 	str.w	r3, [r7, #1060]	; 0x424
-		while(1)  {
-			fres = f_read(&gFile, readBuf, sizeof(readBuf), (UINT *)&bw);
+        while (1) {
+            fres = f_read(&gFile, readBuf, sizeof(readBuf), (UINT *)&bw);
  8003fc6:	1d3b      	adds	r3, r7, #4
  8003fc8:	f107 0108 	add.w	r1, r7, #8
  8003fcc:	f44f 6280 	mov.w	r2, #1024	; 0x400
@@ -8697,22 +8702,22 @@ static void BinaryFlashWrite(void)
  8003fd2:	f007 fc26 	bl	800b822 <f_read>
  8003fd6:	4603      	mov	r3, r0
  8003fd8:	f887 3423 	strb.w	r3, [r7, #1059]	; 0x423
-			if (fres == FR_OK) {
+            if (fres == FR_OK) {
  8003fdc:	f897 3423 	ldrb.w	r3, [r7, #1059]	; 0x423
  8003fe0:	2b00      	cmp	r3, #0
  8003fe2:	d12e      	bne.n	8004042 <BinaryFlashWrite+0x102>
-				totalBw += bw;
+                totalBw += bw;
  8003fe4:	f507 6386 	add.w	r3, r7, #1072	; 0x430
  8003fe8:	f2a3 432c 	subw	r3, r3, #1068	; 0x42c
  8003fec:	681b      	ldr	r3, [r3, #0]
  8003fee:	f8d7 242c 	ldr.w	r2, [r7, #1068]	; 0x42c
  8003ff2:	4413      	add	r3, r2
  8003ff4:	f8c7 342c 	str.w	r3, [r7, #1068]	; 0x42c
-				ramsource = (uint32_t)readBuf;
+                ramsource = (uint32_t)readBuf;
  8003ff8:	f107 0308 	add.w	r3, r7, #8
  8003ffc:	f8c7 341c 	str.w	r3, [r7, #1052]	; 0x41c
 
-				if (FLASH_If_Write(flashdestination, (uint32_t *)ramsource, bw/4) == FLASH_IF_OK) {
+                if (FLASH_If_Write(flashdestination, (uint32_t *)ramsource, bw / 4) == FLASH_IF_OK) {
  8004000:	f8d7 141c 	ldr.w	r1, [r7, #1052]	; 0x41c
  8004004:	f507 6386 	add.w	r3, r7, #1072	; 0x430
  8004008:	f2a3 432c 	subw	r3, r3, #1068	; 0x42c
@@ -8724,44 +8729,44 @@ static void BinaryFlashWrite(void)
  800401a:	4603      	mov	r3, r0
  800401c:	2b00      	cmp	r3, #0
  800401e:	d112      	bne.n	8004046 <BinaryFlashWrite+0x106>
-					flashdestination += bw;
+                    flashdestination += bw;
  8004020:	f507 6386 	add.w	r3, r7, #1072	; 0x430
  8004024:	f2a3 432c 	subw	r3, r3, #1068	; 0x42c
  8004028:	681b      	ldr	r3, [r3, #0]
  800402a:	f8d7 2428 	ldr.w	r2, [r7, #1064]	; 0x428
  800402e:	4413      	add	r3, r2
  8004030:	f8c7 3428 	str.w	r3, [r7, #1064]	; 0x428
-				}
-				else {
-					break;
-				}
+                }
+                else {
+                    break;
+                }
 
-				if (totalBw >= fileSize) {
+                if (totalBw >= fileSize) {
  8004034:	f8d7 242c 	ldr.w	r2, [r7, #1068]	; 0x42c
  8004038:	f8d7 3424 	ldr.w	r3, [r7, #1060]	; 0x424
  800403c:	429a      	cmp	r2, r3
  800403e:	d204      	bcs.n	800404a <BinaryFlashWrite+0x10a>
-			fres = f_read(&gFile, readBuf, sizeof(readBuf), (UINT *)&bw);
+            fres = f_read(&gFile, readBuf, sizeof(readBuf), (UINT *)&bw);
  8004040:	e7c1      	b.n	8003fc6 <BinaryFlashWrite+0x86>
-					break;
-				}
-			}
-			else {
-				break;
+                    break;
+                }
+            }
+            else {
+                break;
  8004042:	bf00      	nop
  8004044:	e002      	b.n	800404c <BinaryFlashWrite+0x10c>
-					break;
+                    break;
  8004046:	bf00      	nop
  8004048:	e000      	b.n	800404c <BinaryFlashWrite+0x10c>
-					break;
+                    break;
  800404a:	bf00      	nop
-			}
-		}		
-		f_unlink((TCHAR *)fileName);
+            }
+        }
+        f_unlink((TCHAR *)fileName);
  800404c:	f507 6381 	add.w	r3, r7, #1032	; 0x408
  8004050:	4618      	mov	r0, r3
  8004052:	f008 f8ef 	bl	800c234 <f_unlink>
-		f_close(&gFile);
+        f_close(&gFile);
  8004056:	4807      	ldr	r0, [pc, #28]	; (8004074 <BinaryFlashWrite+0x134>)
  8004058:	f007 ffb5 	bl	800bfc6 <f_close>
     }
@@ -9043,6 +9048,7 @@ int main(void)
         W5500_DisplayNetConf();
  80041da:	f7fe f80f 	bl	80021fc <W5500_DisplayNetConf>
     }
+    /* GPIOC GPIO_PIN0 */
     state = SWITCH_GetStatus();
  80041de:	f7fc fd67 	bl	8000cb0 <SWITCH_GetStatus>
  80041e2:	4603      	mov	r3, r0

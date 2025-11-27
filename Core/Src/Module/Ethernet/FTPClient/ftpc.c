@@ -35,7 +35,7 @@ void ftpc_init(uint8_t *src_ip)
     ftpc_local_ip.cVal[1] = src_ip[1];
     ftpc_local_ip.cVal[2] = src_ip[2];
     ftpc_local_ip.cVal[3] = src_ip[3];
-    ftpc_local_port = 35000; // 35000
+    ftpc_local_port = 35000;
 
     strcpy(ftpc.workingdir, "/");
     socket(CTRL_SOCK, Sn_MR_TCP, FTP_destport, 0x00);
